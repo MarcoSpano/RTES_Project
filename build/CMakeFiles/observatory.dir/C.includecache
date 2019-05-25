@@ -1,0 +1,116 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gabri/Documenti/Embedded Systems/progetto/lib/gui.h
+
+/home/gabri/Documenti/Embedded Systems/progetto/lib/observatory.h
+pmutex.h
+/home/gabri/Documenti/Embedded Systems/progetto/lib/pmutex.h
+ptask.h
+/home/gabri/Documenti/Embedded Systems/progetto/lib/ptask.h
+tstat.h
+/home/gabri/Documenti/Embedded Systems/progetto/lib/tstat.h
+allegro.h
+-
+../lib/gui.h
+/home/gabri/Documenti/Embedded Systems/progetto/lib/gui.h
+math.h
+-
+pthread.h
+-
+sched.h
+-
+stdio.h
+-
+stdlib.h
+-
+time.h
+-
+
+/home/gabri/Documenti/Embedded Systems/progetto/src/gui.c
+../lib/observatory.h
+/home/gabri/Documenti/Embedded Systems/progetto/lib/observatory.h
+
+/home/gabri/Documenti/Embedded Systems/progetto/src/main.c
+../lib/observatory.h
+/home/gabri/Documenti/Embedded Systems/progetto/lib/observatory.h
+
+/home/gabri/Documenti/Embedded Systems/progetto/src/observatory.c
+../lib/observatory.h
+/home/gabri/Documenti/Embedded Systems/progetto/lib/observatory.h
+
+/home/gabri/ptask/examples/src/include/dle_timer.h
+ptask.h
+/home/gabri/ptask/examples/src/include/ptask.h
+assert.h
+-
+errno.h
+-
+setjmp.h
+-
+signal.h
+-
+stdio.h
+-
+string.h
+-
+time.h
+-
+
+/home/gabri/ptask/examples/src/include/libdl.h
+linux/kernel.h
+-
+linux/sched.h
+-
+linux/types.h
+-
+sched.h
+-
+sys/syscall.h
+-
+unistd.h
+-
+
+/home/gabri/ptask/examples/src/include/pmutex.h
+pthread.h
+-
+
+/home/gabri/ptask/examples/src/include/ptask.h
+dle_timer.h
+/home/gabri/ptask/examples/src/include/dle_timer.h
+libdl.h
+-
+linux/sched.h
+-
+pthread.h
+-
+ptime.h
+-
+rtmode.h
+-
+semaphore.h
+-
+setjmp.h
+-
+signal.h
+-
+
+/home/gabri/ptask/examples/src/include/ptime.h
+time.h
+-
+
+/home/gabri/ptask/examples/src/include/rtmode.h
+pthread.h
+-
+ptime.h
+-
+
+/home/gabri/ptask/examples/src/include/tstat.h
+ptime.h
+-
+

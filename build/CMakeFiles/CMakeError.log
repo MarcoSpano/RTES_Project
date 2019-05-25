@@ -1,0 +1,35 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/gabri/Documenti/Embedded Systems/progetto/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_286e8/fast"
+/usr/bin/make -f CMakeFiles/cmTC_286e8.dir/build.make CMakeFiles/cmTC_286e8.dir/build
+make[1]: ingresso nella directory "/home/gabri/Documenti/Embedded Systems/progetto/build/CMakeFiles/CMakeTmp"
+Building C object CMakeFiles/cmTC_286e8.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_286e8.dir/CheckSymbolExists.c.o   -c "/home/gabri/Documenti/Embedded Systems/progetto/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+Linking C executable cmTC_286e8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_286e8.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_286e8.dir/CheckSymbolExists.c.o  -o cmTC_286e8 
+CMakeFiles/cmTC_286e8.dir/CheckSymbolExists.c.o: nella funzione "main":
+CheckSymbolExists.c:(.text+0x1b): riferimento non definito a "pthread_create"
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_286e8.dir/build.make:97: recipe for target 'cmTC_286e8' failed
+make[1]: *** [cmTC_286e8] Error 1
+make[1]: uscita dalla directory "/home/gabri/Documenti/Embedded Systems/progetto/build/CMakeFiles/CMakeTmp"
+Makefile:126: recipe for target 'cmTC_286e8/fast' failed
+make: *** [cmTC_286e8/fast] Error 2
+
+File /home/gabri/Documenti/Embedded Systems/progetto/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
