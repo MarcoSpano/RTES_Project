@@ -14,7 +14,7 @@
 
 #define XWIN 1280
 #define YWIN 720
-#define OBS_SHAPE 300   /* Dimensione di un lato del quadrato si osservazione   */
+#define OBS_SHAPE 300   /* Dimensione di un lato del quadrato si osservazione*/
 #define BGC 0    /* background color		*/
 #define G 9.8    /* acceleration of gravity	*/
 #define BASE 200  /* position of the floor	*/
@@ -34,6 +34,8 @@
 #define WDIAG BASE
 #define HDIAG YWIN - LINE - 1
 #define TBLOCK BORDER * 4
+#define RY 520
+#define RX 1080
 
 #define N 6
 
@@ -48,8 +50,8 @@ struct telescopes{
 
     int x_obs[N];   /* Valore sull'asse x del centroide della finestra di osservazione    */
     int y_obs[N];   /* Valore sull'asse y del centroide della finestra di osservazione    */
-    float vx_obs[N];   /* Valore sull'asse x della velocità della finestra di osservazione    */
-    float vy_obs[N];   /* Valore sull'asse y della velocità della finestra di osservazione    */
+    float x_tel[N];   /* Valore sull'asse x della posizione del telescopio    */
+    float y_tel[N];   /* Valore sull'asse y della posizione del telescopio    */
     float x_angle[N]; /* Valore sull'asse x dell'angolo relativo al motore dei telescopi    */
 
     int telescope_state[N];  /* Stato di ogni telescopio */

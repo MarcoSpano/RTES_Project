@@ -1,4 +1,4 @@
-# Install script for directory: /home/gabri/Documenti/Embedded Systems/progetto
+# Install script for directory: /home/gabri/Documenti/Embedded Systems/RTES_Project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/gabri/Documenti/Embedded Systems/progetto/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/gabri/Documenti/Embedded Systems/RTES_Project/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

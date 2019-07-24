@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/home/gabri/Documenti/Embedded Systems/progetto"
+CMAKE_SOURCE_DIR = "/home/gabri/Documenti/Embedded Systems/RTES_Project"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/home/gabri/Documenti/Embedded Systems/progetto"
+CMAKE_BINARY_DIR = "/home/gabri/Documenti/Embedded Systems/RTES_Project"
 
 # Include any dependencies generated for this target.
 include CMakeFiles/observatory.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/observatory.dir/flags.make
 
 CMakeFiles/observatory.dir/src/main.c.o: CMakeFiles/observatory.dir/flags.make
 CMakeFiles/observatory.dir/src/main.c.o: src/main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/observatory.dir/src/main.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/observatory.dir/src/main.c.o   -c "/home/gabri/Documenti/Embedded Systems/progetto/src/main.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/observatory.dir/src/main.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/observatory.dir/src/main.c.o   -c "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/main.c"
 
 CMakeFiles/observatory.dir/src/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/observatory.dir/src/main.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/gabri/Documenti/Embedded Systems/progetto/src/main.c" > CMakeFiles/observatory.dir/src/main.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/main.c" > CMakeFiles/observatory.dir/src/main.c.i
 
 CMakeFiles/observatory.dir/src/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/observatory.dir/src/main.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/gabri/Documenti/Embedded Systems/progetto/src/main.c" -o CMakeFiles/observatory.dir/src/main.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/main.c" -o CMakeFiles/observatory.dir/src/main.c.s
 
 CMakeFiles/observatory.dir/src/main.c.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/observatory.dir/src/main.c.o.provides.build: CMakeFiles/observatory.d
 
 CMakeFiles/observatory.dir/src/observatory.c.o: CMakeFiles/observatory.dir/flags.make
 CMakeFiles/observatory.dir/src/observatory.c.o: src/observatory.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/observatory.dir/src/observatory.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/observatory.dir/src/observatory.c.o   -c "/home/gabri/Documenti/Embedded Systems/progetto/src/observatory.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/observatory.dir/src/observatory.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/observatory.dir/src/observatory.c.o   -c "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/observatory.c"
 
 CMakeFiles/observatory.dir/src/observatory.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/observatory.dir/src/observatory.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/gabri/Documenti/Embedded Systems/progetto/src/observatory.c" > CMakeFiles/observatory.dir/src/observatory.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/observatory.c" > CMakeFiles/observatory.dir/src/observatory.c.i
 
 CMakeFiles/observatory.dir/src/observatory.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/observatory.dir/src/observatory.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/gabri/Documenti/Embedded Systems/progetto/src/observatory.c" -o CMakeFiles/observatory.dir/src/observatory.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/observatory.c" -o CMakeFiles/observatory.dir/src/observatory.c.s
 
 CMakeFiles/observatory.dir/src/observatory.c.o.requires:
 
@@ -107,16 +107,16 @@ CMakeFiles/observatory.dir/src/observatory.c.o.provides.build: CMakeFiles/observ
 
 CMakeFiles/observatory.dir/src/gui.c.o: CMakeFiles/observatory.dir/flags.make
 CMakeFiles/observatory.dir/src/gui.c.o: src/gui.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/observatory.dir/src/gui.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/observatory.dir/src/gui.c.o   -c "/home/gabri/Documenti/Embedded Systems/progetto/src/gui.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/observatory.dir/src/gui.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/observatory.dir/src/gui.c.o   -c "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/gui.c"
 
 CMakeFiles/observatory.dir/src/gui.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/observatory.dir/src/gui.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/gabri/Documenti/Embedded Systems/progetto/src/gui.c" > CMakeFiles/observatory.dir/src/gui.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/gui.c" > CMakeFiles/observatory.dir/src/gui.c.i
 
 CMakeFiles/observatory.dir/src/gui.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/observatory.dir/src/gui.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/gabri/Documenti/Embedded Systems/progetto/src/gui.c" -o CMakeFiles/observatory.dir/src/gui.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/gui.c" -o CMakeFiles/observatory.dir/src/gui.c.s
 
 CMakeFiles/observatory.dir/src/gui.c.o.requires:
 
@@ -144,7 +144,7 @@ observatory: CMakeFiles/observatory.dir/src/gui.c.o
 observatory: CMakeFiles/observatory.dir/build.make
 observatory: /home/gabri/ptask/examples/src/libptask.a
 observatory: CMakeFiles/observatory.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable observatory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable observatory"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/observatory.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -163,6 +163,6 @@ CMakeFiles/observatory.dir/clean:
 .PHONY : CMakeFiles/observatory.dir/clean
 
 CMakeFiles/observatory.dir/depend:
-	cd "/home/gabri/Documenti/Embedded Systems/progetto" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/home/gabri/Documenti/Embedded Systems/progetto" "/home/gabri/Documenti/Embedded Systems/progetto" "/home/gabri/Documenti/Embedded Systems/progetto" "/home/gabri/Documenti/Embedded Systems/progetto" "/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles/observatory.dir/DependInfo.cmake" --color=$(COLOR)
+	cd "/home/gabri/Documenti/Embedded Systems/RTES_Project" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/home/gabri/Documenti/Embedded Systems/RTES_Project" "/home/gabri/Documenti/Embedded Systems/RTES_Project" "/home/gabri/Documenti/Embedded Systems/RTES_Project" "/home/gabri/Documenti/Embedded Systems/RTES_Project" "/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles/observatory.dir/DependInfo.cmake" --color=$(COLOR)
 .PHONY : CMakeFiles/observatory.dir/depend
 

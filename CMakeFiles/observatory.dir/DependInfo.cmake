@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/gabri/Documenti/Embedded Systems/progetto/src/gui.c" "/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles/observatory.dir/src/gui.c.o"
-  "/home/gabri/Documenti/Embedded Systems/progetto/src/main.c" "/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles/observatory.dir/src/main.c.o"
-  "/home/gabri/Documenti/Embedded Systems/progetto/src/observatory.c" "/home/gabri/Documenti/Embedded Systems/progetto/CMakeFiles/observatory.dir/src/observatory.c.o"
+  "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/gui.c" "/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles/observatory.dir/src/gui.c.o"
+  "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/main.c" "/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles/observatory.dir/src/main.c.o"
+  "/home/gabri/Documenti/Embedded Systems/RTES_Project/src/observatory.c" "/home/gabri/Documenti/Embedded Systems/RTES_Project/CMakeFiles/observatory.dir/src/observatory.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

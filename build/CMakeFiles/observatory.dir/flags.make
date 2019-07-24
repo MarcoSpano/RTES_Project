@@ -6,5 +6,5 @@ C_FLAGS =   -pthread
 
 C_DEFINES = 
 
-C_INCLUDES = -I"/home/gabri/Documenti/Embedded Systems/progetto/." -I/home/gabri/ptask/examples/src/include 
+C_INCLUDES = -I"/home/gabri/Documenti/Embedded Systems/RTES_Project/." -I/home/gabri/ptask/examples/src/include 
 

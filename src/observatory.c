@@ -10,8 +10,8 @@ void init_allegro(){
 
     srand(time(NULL));
 
-    textout_centre_ex(screen, font, "SPACE to begin the observation", XWIN / 2, YWIN / 2,
-                      14, 0);
+    textout_centre_ex(screen, font, "SPACE to begin the observation",
+                         XWIN / 2, YWIN / 2, 14, 0);
     //textout_centre_ex(screen, font, "ESC exit", XWIN / 2, YWIN / 2 + 30, 14, 0);
     line(screen, 0, YWIN - LINE, XWIN, YWIN - LINE, 14);
 }
@@ -55,11 +55,6 @@ void init_coordinates(struct telescopes* t){
 void init_velocity(struct telescopes* t){
     int i;
 
-    for(i=0; i<N; i++){
-        t->vx_obs[i] = 0;
-        t->vy_obs[i] = 0;
-    }
-
     planet_vx = 0.25 / PER;
     planet_vy = 0;
 }
@@ -89,10 +84,13 @@ void init_parameters(struct telescopes* t){
         t->telescope_state[i] = OBSERVATION;
         //centered[i] = 0;
         t->noise_level[i] = 500;
+        t->x_tel[i] = i * (BASE - BORDER) + (BASE - BORDER + 1)/2;
+        t->y_tel[i] = YWIN - LINE;
     }
     t->completed = 0;
     t->elaborated = 0;
     kp = kd = 1;
+
 }
 
 void init(){
@@ -213,15 +211,90 @@ void telescope(){
     ptask_wait_for_period();
 }
 
-void motor(float v, int i){
-    float p, a, b;
-    p = exp(-(11/PER));
-    a = 0.5 * (11/1000 - PER/1000 + p*PER/1000);
-    fprintf(stderr, "v: %f\n", v);
-    fprintf(stderr, "a: %f\n", a);
-    fprintf(stderr, "angle: %f\n", tel.x_angle[i]); 
+double square_difference(int x1, int y1, int x2, int y2){
+    int sqdiff_x, sqdiff_y;
+    sqdiff_x = (x2 - x1) * (x2 - x1);
+    sqdiff_y = (y2 - y1) * (y2 - y1);
 
-    tel.x_angle[i] = a * v + (1 + p)*tel.x_angle[i];
+    return sqrt(sqdiff_x + sqdiff_y);
+}
+
+double compute_xangle(struct telescopes* t, int i){
+    
+    double m1, m2, tn;
+    int y_obs, y_pred;
+    y_obs = sqrt(RX*RX - (t->x_obs[i]-t->x_tel[i])*(t->x_obs[i]-t->x_tel[i]));
+    y_pred = sqrt(RX*RX - (t->x_pred[i]-t->x_tel[i])*(t->x_pred[i]-t->x_tel[i]));
+
+    if((t->x_obs[i] - t->x_tel[i]) != 0)
+        m1 = (double)(y_obs) / (t->x_obs[i] - t->x_tel[i]);
+    else
+        m1 = 0;
+
+    if((t->x_pred[i]  - t->x_tel[i]) != 0)
+        m2 = (double)(y_pred) / (t->x_pred[i]  - t->x_tel[i]);
+    else
+        m2 = 0;
+
+    //fprintf(stderr, "%d, m1: %lf + m2: %lf\n", i, m1, m2);
+    
+    tn = (m1 - m2)/(1 + m1*m2);
+
+    //fprintf(stderr, "%d, xtn: %lf\n", i, tn);
+
+    if(tn < 0)
+        tn = -tn;
+
+    return atan(tn);
+}
+
+double compute_yangle(struct telescopes* t, int i){
+    
+    double m1, m2, tn;
+    int x_obs, x_pred;
+    x_obs = sqrt(RY*RY - (t->y_obs[i]-t->y_tel[i])*(t->y_obs[i]-t->y_tel[i]));
+    x_pred = sqrt(RY*RY - (t->y_pred[i]-t->y_tel[i])*(t->y_pred[i]-t->y_tel[i]));
+    
+    m1 = (double)(t->y_obs[i] - t->y_tel[i]) / (x_obs);
+    m2 = (double)(t->y_pred[i] - t->y_tel[i]) / (x_pred);
+
+    fprintf(stderr, "%d, m1: %lf + m2: %lf\n", i, m1, m2);
+    
+    tn = (m1 - m2)/(1 + m1*m2);
+
+    //if(tn < 0)
+    //    tn = -tn;
+
+    return atan(tn);
+}
+
+void xmotor(double angle, int i){
+    double x;
+
+    //x = (angle * RX)/180;
+
+    //fprintf(stderr, "Aggiornamento: %lf\n", x);
+
+    if(angle < 0){
+        tel.x_obs[i] += 1;
+    }
+    else if(angle > 0)
+        tel.x_obs[i] -= 1;
+
+    //tel.x_obs[i] += (int)round(x);
+}
+
+void ymotor(double angle, int i){
+    int y;
+
+    //y = (RY * angle)/180;
+
+    if(angle > 0)
+        tel.y_obs[i] -= 1;
+    else if(angle < 0)
+        tel.y_obs[i] += 1;
+
+    //tel.y_obs[i] += y;
 }
 void update_state(){
     
@@ -234,7 +307,7 @@ void telescope_motor(){
     int vx, vy; // Velocità attuale
     int xd, yd; // Posizione desiderata
     int vd; //  Velocità desiderata
-    float u, v, k;
+    double angle;
 
     while(1){
         pthread_mutex_lock(&tel.tracking[i]);
@@ -244,17 +317,25 @@ void telescope_motor(){
         y = tel.y_obs[i];
 
         if(abs(tel.x_pred[i] - tel.x_obs[i]) > 0){
-            if(x < (tel.x_pred[i])){
-                tel.x_obs[i] += 1;
-            }
-            else if(x > (tel.x_pred[i]))
-                tel.x_obs[i] -= 1;
+            //if(x < (tel.x_pred[i])){
+            //    tel.x_obs[i] += 1;
+            //}
+            //else if(x > (tel.x_pred[i]))
+            //    tel.x_obs[i] -= 1;
+            angle = compute_xangle(&tel, i);
+            xmotor(angle, i);
+
+            //fprintf(stderr, "%d, xangle: %lf\n", i, angle/3.14*180);
         }
         if(abs(tel.y_pred[i] - tel.y_obs[i]) > 0){
-            if(y < (tel.y_pred[i]))
-                tel.y_obs[i] += 1;
-            else if(y > (tel.y_pred[i]))
-                tel.y_obs[i] -= 1;
+            //if(y < (tel.y_pred[i]))
+            //    tel.y_obs[i] += 1;
+            //else if(y > (tel.y_pred[i]))
+            //    tel.y_obs[i] -= 1;
+
+            angle = compute_yangle(&tel, i);
+            ymotor(angle, i);
+            fprintf(stderr, "%d, yangle: %lf\n", i, angle/3.14*180);
         }
         
         if(tel.telescope_state[i] == TRACKING){
@@ -268,21 +349,6 @@ void telescope_motor(){
 
         pthread_mutex_unlock(&mutex);
         
-/*
-        x = x_obs[i];
-        y = y_obs[i];
-        vx = vx_obs[i];
-        vy = vy_obs[i];
-
-        xd = planet_x;
-        yd = planet_y;
-        vd = planet_vx;
-
-        pthread_mutex_unlock(&mutex); 
-
-        u = kp * (xd - x) + kd * (vd - vx);
-        //v = delay(u);
-        motor(u, i);*/
         ptask_wait_for_period();
     }
 }

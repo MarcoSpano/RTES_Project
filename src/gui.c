@@ -20,7 +20,7 @@ void gui(){
         x = planet_x - OBS_SHAPE/2;
         y = planet_y - OBS_SHAPE/2;
         stretch_sprite(buffer, planet_img, x, y, 300, 300);
-        fprintf(stderr, "planet x: %d, y: %d\n", x, y);
+        //fprintf(stderr, "planet x: %d, y: %d\n", x, y);
         // Realizzo il cielo
 
         clear_to_color(sky, BGC);
@@ -48,6 +48,8 @@ void gui(){
                     // Scrivo observation window sul buffer.
                     rect(buffer, tel.x_obs[i] - OBS_SHAPE/2, tel.y_obs[i] - OBS_SHAPE/2,
                             tel.x_obs[i] + OBS_SHAPE/2, tel.y_obs[i] + OBS_SHAPE/2, 14);
+                    line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_obs[i], tel.y_obs[i], 14);
+                    line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_pred[i], tel.y_pred[i], 30);
                 }
             }
         }

@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/osservatorio.dir/src/osservatorio.c.o  -o osservatorio /home/gabri/ptask/examples/src/libptask.a -L/usr/lib/x86_64-linux-gnu -lalleg -lm -lrt -pthread 

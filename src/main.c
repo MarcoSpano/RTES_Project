@@ -125,6 +125,8 @@ int main(void){
         
     } while (k != KEY_ESC);
 
+    //pthread_mutex_lock(&mutex);
+
     allegro_exit();
     
     return 0;
