@@ -258,7 +258,7 @@ double compute_yangle(struct telescopes* t, int i){
     m1 = (double)(t->y_obs[i] - t->y_tel[i]) / (x_obs);
     m2 = (double)(t->y_pred[i] - t->y_tel[i]) / (x_pred);
 
-    fprintf(stderr, "%d, m1: %lf + m2: %lf\n", i, m1, m2);
+    //fprintf(stderr, "%d, m1: %lf + m2: %lf\n", i, m1, m2);
     
     tn = (m1 - m2)/(1 + m1*m2);
 
@@ -296,9 +296,6 @@ void ymotor(double angle, int i){
 
     //tel.y_obs[i] += y;
 }
-void update_state(){
-    
-}
 
 void telescope_motor(){
     int i;
@@ -335,7 +332,7 @@ void telescope_motor(){
 
             angle = compute_yangle(&tel, i);
             ymotor(angle, i);
-            fprintf(stderr, "%d, yangle: %lf\n", i, angle/3.14*180);
+            //fprintf(stderr, "%d, yangle: %lf\n", i, angle/3.14*180);
         }
         
         if(tel.telescope_state[i] == TRACKING){
