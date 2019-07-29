@@ -21,10 +21,8 @@ int main(void){
             sprintf(s, "Telescope %d", i+1);
             textout_ex(screen, font, s, BORDER + i * XWIN/N, YWIN - LINE + BORDER, 15, 0);
             sprintf(nl, "noise level: %d", tel.noise_level[i]);
-            textout_ex(screen, font, nl, BORDER * 2 + i * XWIN/N, YWIN -LINE + BORDER * 2,
-                      15, 0);
-            line(screen, (i+1) * XWIN/N, YWIN -LINE, (i+1) * XWIN/N, YWIN,
-                      15);
+            textout_ex(screen, font, nl, BORDER * 2 + i * XWIN/N, YWIN -LINE + BORDER * 2, 15, 0);
+            line(screen, (i+1) * XWIN/N, YWIN -LINE, (i+1) * XWIN/N, YWIN, 15);
         }
     }while(k != KEY_SPACE);
     
@@ -126,8 +124,8 @@ int main(void){
     } while (k != KEY_ESC);
 
     //pthread_mutex_lock(&mutex);
-
     allegro_exit();
+    sleep(1);
     
     return 0;
 }

@@ -11,7 +11,7 @@ void gui_planet(BITMAP *buffer){
 
     // Realizzo il cielo
     clear_to_color(sky, BGC);
-        stretch_sprite(sky, planet_img, x, y, 300, 300);
+    stretch_sprite(sky, planet_img, x, y, 300, 300);
 }
 
 void gui_telescopes(BITMAP *buffer){

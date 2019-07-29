@@ -1,5 +1,14 @@
 #include "../lib/observatory.h"
 
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+//				INIT FUNCTIONS
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+
 void init_allegro(){
     allegro_init();
     set_gfx_mode(GFX_AUTODETECT_WINDOWED, XWIN, YWIN, 0, 0);
@@ -79,11 +88,22 @@ void init_bitmaps(struct telescopes* t){
 
 void init_parameters(struct telescopes* t){
     int i;
+    char *endptr;
+    int n;
 
     for(i=0; i<N; i++){
         t->telescope_state[i] = OBSERVATION;
         //centered[i] = 0;
-        t->noise_level[i] = 500;
+        if(noise_modification[i][0] == 0)
+            n = DEFAULT_NOISE;
+        else{
+            n = strtol(noise_modification[i], &endptr, 10);
+            if(n > MAX_NOISE)
+                n = MAX_NOISE;
+            else if(n < 0)
+                n = DEFAULT_NOISE;
+        }
+        t->noise_level[i] = n * NOISE_VAL_MULTIPLIER;
         t->x_tel[i] = i * (BASE - BORDER) + (BASE - BORDER + 1)/2;
         t->y_tel[i] = YWIN - LINE;
     }
@@ -93,9 +113,34 @@ void init_parameters(struct telescopes* t){
 
 }
 
+DIALOG options[] = {
+    /* (dialog proc) (x) (y) (w) (h) (fg) (bg) (key) (flags) (d1) (d2) (dp)
+       (dp2) (dp3) */
+    {d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC, 0, 0, 0, 0, NULL, NULL, NULL},
+
+    {d_text_proc, LINE + BORDER, LINE + BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 1", NULL, NULL},
+
+    {d_edit_proc, LINE + 2*BORDER + TEXT_W, LINE + BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[0], NULL, NULL},
+
+    {d_text_proc, LINE + BORDER, LINE + 2*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 2", NULL, NULL},
+
+    {d_edit_proc, LINE + 2*BORDER + TEXT_W, LINE + 2*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[0], NULL, NULL},
+
+    {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2, 40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL},
+
+    /* Final object */
+    {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL}
+};
+
+void init_dial(){
+    do_dialog(options, -1);
+}
+
 void init(){
 
     init_allegro();
+
+    init_dial();
 
     init_semaphores(&tel);
 
@@ -109,6 +154,15 @@ void init(){
 
     ptask_init(SCHED_FIFO, GLOBAL, PRIO_CEILING);
 }
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+//				PLANET MOTION AND DETECTION FUNCTIONS
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
 
 void planet(){
     int x = 100;
@@ -175,7 +229,9 @@ void start_acquisition(int i){
         for(j = 0; j < tel.noise_level[i]; j++){
             x = rand() % OBS_SHAPE;
             y = rand() % OBS_SHAPE;
-            c = rand() % 16;
+            //c = rand() % 2;
+            //if(c == 1)
+                c = 255;
             putpixel(tel.observation[i], x, y, c);
         }
 
@@ -211,6 +267,15 @@ void telescope(){
     ptask_wait_for_period();
 }
 
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+//				TELESCOPES MOTOR LOGIC FUNCTIONS
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+
 double square_difference(int x1, int y1, int x2, int y2){
     int sqdiff_x, sqdiff_y;
     sqdiff_x = (x2 - x1) * (x2 - x1);
@@ -235,12 +300,8 @@ double compute_xangle(struct telescopes* t, int i){
         m2 = (double)(y_pred) / (t->x_pred[i]  - t->x_tel[i]);
     else
         m2 = 0;
-
-    //fprintf(stderr, "%d, m1: %lf + m2: %lf\n", i, m1, m2);
     
     tn = (m1 - m2)/(1 + m1*m2);
-
-    //fprintf(stderr, "%d, xtn: %lf\n", i, tn);
 
     if(tn < 0)
         tn = -tn;
@@ -349,6 +410,14 @@ void telescope_motor(){
         ptask_wait_for_period();
     }
 }
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+//				IMAGE ELABORATION FUNCTIONS
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 int find_majority_col(int col[]){
     int i, j;

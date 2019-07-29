@@ -23,6 +23,9 @@
 #define PER 10   /* task period in ms		*/
 #define DREL 10  /* realtive deadline in ms	*/
 #define PRIO 80  /* task priority		*/
+#define MAX_NOISE 100 /* Massimo rumore in percentuale */
+#define DEFAULT_NOISE 50 /* Rumore standard in percentuale */
+#define NOISE_VAL_MULTIPLIER 25 /* Usato per moltiplicare la percentale di rumore */
 
 #define OBSERVATION 0
 #define TRACKING 1
@@ -36,6 +39,11 @@
 #define TBLOCK BORDER * 4
 #define RY 520
 #define RX 1080
+
+#define DIALOG_W XWIN - 2*LINE
+#define DIALOG_H YWIN - 2*LINE
+#define TEXT_W 80
+#define TEXT_H 60
 
 #define N 6
 
@@ -72,8 +80,10 @@ float planet_vy;   /* Velocità del pianeta sull'asse y    */
 int kp, kd; /* Parametri di controllo del telescope motor   */
 
 BITMAP *planet_img; /* Bitmap di un pianeta */
-BITMAP *sky; /* Bitmap con solo il pianeta, niente intefaccia   */
+BITMAP *sky; /* Bitmap con solo il pianeta, niente intefaccia. E' ciò che un telescopio può vedere  */
 BITMAP *result; /* Bitmap con il risultato dell'elaborazione    */
+
+char noise_modification[6][3]; /* Contiene il valore per modificare il rumore */
 
 extern void init();
 
