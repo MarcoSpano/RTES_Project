@@ -9,7 +9,8 @@ int main(void){
     char nl[15];
 
     init();
-    
+    clear_to_color(screen, BGC);
+
     int x1, y1, x2, y2;
     do{
         if (keypressed()) {
@@ -18,6 +19,10 @@ int main(void){
         }
 
         for(i = 0; i < N; i++){
+            textout_centre_ex(screen, font, "SPACE to begin the observation",
+                         XWIN / 2, YWIN / 2, 14, 0);
+            line(screen, 0, YWIN - LINE, XWIN, YWIN - LINE, 14);
+            
             sprintf(s, "Telescope %d", i+1);
             textout_ex(screen, font, s, BORDER + i * XWIN/N, YWIN - LINE + BORDER, 15, 0);
             sprintf(nl, "noise level: %d", tel.noise_level[i]);

@@ -68,6 +68,7 @@ struct telescopes{
 
     int completed; /* Conta i telescopi che hanno completato l'osservazione  */
     int noise_level[N]; /* Livello del rumore percepito da ogni telescopio  */
+    int motor_level[N]; /* Motor speed level */
     int elaborated; /* A 1 se l'elaborazione finale è stata completata  */
 
     BITMAP *observation[N]; /* Bitmap delle osservazioni dei vari telescopi */

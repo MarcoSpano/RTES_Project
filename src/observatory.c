@@ -19,10 +19,10 @@ void init_allegro(){
 
     srand(time(NULL));
 
-    textout_centre_ex(screen, font, "SPACE to begin the observation",
-                         XWIN / 2, YWIN / 2, 14, 0);
+    //textout_centre_ex(screen, font, "SPACE to begin the observation",
+    //                     XWIN / 2, YWIN / 2, 14, 0);
     //textout_centre_ex(screen, font, "ESC exit", XWIN / 2, YWIN / 2 + 30, 14, 0);
-    line(screen, 0, YWIN - LINE, XWIN, YWIN - LINE, 14);
+    //line(screen, 0, YWIN - LINE, XWIN, YWIN - LINE, 14);
 }
 
 void init_semaphores(struct telescopes* t){
@@ -104,6 +104,7 @@ void init_parameters(struct telescopes* t){
                 n = DEFAULT_NOISE;
         }
         t->noise_level[i] = n * NOISE_VAL_MULTIPLIER;
+        t->motor_level[i] = 1;
         t->x_tel[i] = i * (BASE - BORDER) + (BASE - BORDER + 1)/2;
         t->y_tel[i] = YWIN - LINE;
     }
@@ -113,26 +114,46 @@ void init_parameters(struct telescopes* t){
 
 }
 
-DIALOG options[] = {
-    /* (dialog proc) (x) (y) (w) (h) (fg) (bg) (key) (flags) (d1) (d2) (dp)
-       (dp2) (dp3) */
-    {d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC, 0, 0, 0, 0, NULL, NULL, NULL},
-
-    {d_text_proc, LINE + BORDER, LINE + BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 1", NULL, NULL},
-
-    {d_edit_proc, LINE + 2*BORDER + TEXT_W, LINE + BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[0], NULL, NULL},
-
-    {d_text_proc, LINE + BORDER, LINE + 2*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 2", NULL, NULL},
-
-    {d_edit_proc, LINE + 2*BORDER + TEXT_W, LINE + 2*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[0], NULL, NULL},
-
-    {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2, 40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL},
-
-    /* Final object */
-    {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL}
-};
-
 void init_dial(){
+
+    DIALOG options[] = {
+        /* (dialog proc) (x) (y) (w) (h) (fg) (bg) (key) (flags) (d1) (d2) (dp) (dp2) (dp3) */
+        {d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC, 0, 0, 0, 0, NULL, NULL, NULL},
+
+        {d_text_proc, LINE + BORDER, LINE + BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 1", NULL, NULL},
+
+        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[0], NULL, NULL},
+
+        {d_text_proc, LINE + BORDER, LINE + 2*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 2", NULL, NULL},
+
+        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 2*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[1], NULL, NULL},
+
+        {d_text_proc, LINE + BORDER, LINE + 3*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 3", NULL, NULL},
+
+        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 3*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[2], NULL, NULL},
+
+        {d_text_proc, LINE + BORDER, LINE + 4*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 4", NULL, NULL},
+
+        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 4*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[3], NULL, NULL},
+
+        {d_text_proc, LINE + BORDER, LINE + 5*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 5", NULL, NULL},
+
+        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 5*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[4], NULL, NULL},
+
+        {d_text_proc, LINE + BORDER, LINE + 6*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 6", NULL, NULL},
+
+        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 6*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[5], NULL, NULL},
+
+        {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2, 40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL},
+
+        /* Final object */
+        {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL}
+    };
+
+    textout_centre_ex(screen, font, "You can selecet the value (in percentage) of telescopes parameters",
+                         XWIN / 2, BORDER, 14, 0);
+    textout_centre_ex(screen, font, "[If you leave blank, default parameters will be used]",
+                         XWIN / 2, 2*BORDER, 14, 0);
     do_dialog(options, -1);
 }
 
@@ -294,17 +315,17 @@ double compute_xangle(struct telescopes* t, int i){
     if((t->x_obs[i] - t->x_tel[i]) != 0)
         m1 = (double)(y_obs) / (t->x_obs[i] - t->x_tel[i]);
     else
-        m1 = 0;
+        m1 = 100;
 
     if((t->x_pred[i]  - t->x_tel[i]) != 0)
         m2 = (double)(y_pred) / (t->x_pred[i]  - t->x_tel[i]);
     else
-        m2 = 0;
+        m2 = 100;
     
     tn = (m1 - m2)/(1 + m1*m2);
 
-    if(tn < 0)
-        tn = -tn;
+    //if(tn < 0)
+    //    tn = -tn;
 
     return atan(tn);
 }
@@ -330,30 +351,49 @@ double compute_yangle(struct telescopes* t, int i){
 }
 
 void xmotor(double angle, int i){
-    double x;
+    float x;
+    float delta;
 
-    //x = (angle * RX)/180;
+    x = (angle * RX)/180;
 
     //fprintf(stderr, "Aggiornamento: %lf\n", x);
 
-    if(angle < 0){
-        tel.x_obs[i] += 1;
-    }
-    else if(angle > 0)
-        tel.x_obs[i] -= 1;
+    delta = tel.motor_level[i]*x;
+    if(delta > 0 && delta < 1)
+        delta = 1;
+    else if(delta < 0 && delta > -1)
+        delta = -1;
+
+    tel.x_obs[i] += delta;
+
+    //if(angle > 0){
+    //    tel.x_obs[i] += 5*x;
+    //}
+    //else 
+    //    tel.x_obs[i] -= 5*x;
 
     //tel.x_obs[i] += (int)round(x);
 }
 
 void ymotor(double angle, int i){
-    int y;
+    float y;
+    float delta;
 
-    //y = (RY * angle)/180;
+    y = (RY * angle)/180;
+    fprintf(stderr, "Aggiornamento: %lf\n", y);
 
-    if(angle > 0)
-        tel.y_obs[i] -= 1;
-    else if(angle < 0)
-        tel.y_obs[i] += 1;
+    delta = tel.motor_level[i]*y;
+    if(delta > 0 && delta < 1)
+        delta = 1;
+    else if(delta < 0 && delta > -1)
+        delta = -1;
+
+    tel.y_obs[i] -= delta;
+
+    //if(angle > 0)
+    //    tel.y_obs[i] -= 1;
+    //else if(angle < 0)
+    //    tel.y_obs[i] += 1;
 
     //tel.y_obs[i] += y;
 }
@@ -362,9 +402,6 @@ void telescope_motor(){
     int i;
     i = ptask_get_index() - 1;
     int x, y;   // Posizione attuale
-    int vx, vy; // Velocità attuale
-    int xd, yd; // Posizione desiderata
-    int vd; //  Velocità desiderata
     double angle;
 
     while(1){
@@ -375,22 +412,11 @@ void telescope_motor(){
         y = tel.y_obs[i];
 
         if(abs(tel.x_pred[i] - tel.x_obs[i]) > 0){
-            //if(x < (tel.x_pred[i])){
-            //    tel.x_obs[i] += 1;
-            //}
-            //else if(x > (tel.x_pred[i]))
-            //    tel.x_obs[i] -= 1;
             angle = compute_xangle(&tel, i);
             xmotor(angle, i);
-
-            //fprintf(stderr, "%d, xangle: %lf\n", i, angle/3.14*180);
+            //fprintf(stderr, "%d, xangle: %lf\n", i, angle);
         }
         if(abs(tel.y_pred[i] - tel.y_obs[i]) > 0){
-            //if(y < (tel.y_pred[i]))
-            //    tel.y_obs[i] += 1;
-            //else if(y > (tel.y_pred[i]))
-            //    tel.y_obs[i] -= 1;
-
             angle = compute_yangle(&tel, i);
             ymotor(angle, i);
             //fprintf(stderr, "%d, yangle: %lf\n", i, angle/3.14*180);
