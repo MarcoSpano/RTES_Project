@@ -85,6 +85,7 @@ BITMAP *sky; /* Bitmap con solo il pianeta, niente intefaccia. E' ciò che un te
 BITMAP *result; /* Bitmap con il risultato dell'elaborazione    */
 
 char noise_modification[6][3]; /* Contiene il valore per modificare il rumore */
+char motor_modification[6][3]; /* Contiene il valore per modificare il la velocità del motore */
 
 extern void init();
 

@@ -86,10 +86,18 @@ void init_bitmaps(struct telescopes* t){
     result = create_bitmap(OBS_SHAPE, OBS_SHAPE);
 }
 
+int check_value(int n){
+    if(n > MAX_NOISE)
+        n = MAX_NOISE;
+    else if(n < 0)
+        n = DEFAULT_NOISE;
+    return n;
+}
+
 void init_parameters(struct telescopes* t){
     int i;
     char *endptr;
-    int n;
+    int n, m;
 
     for(i=0; i<N; i++){
         t->telescope_state[i] = OBSERVATION;
@@ -98,13 +106,17 @@ void init_parameters(struct telescopes* t){
             n = DEFAULT_NOISE;
         else{
             n = strtol(noise_modification[i], &endptr, 10);
-            if(n > MAX_NOISE)
-                n = MAX_NOISE;
-            else if(n < 0)
-                n = DEFAULT_NOISE;
+            n = check_value(n);
+        }
+
+        if(motor_modification[i][0] == 0)
+            m = DEFAULT_NOISE;
+        else{
+            m = strtol(motor_modification[i], &endptr, 10);
+            m = check_value(m);
         }
         t->noise_level[i] = n * NOISE_VAL_MULTIPLIER;
-        t->motor_level[i] = 1;
+        t->motor_level[i] = m / 10;
         t->x_tel[i] = i * (BASE - BORDER) + (BASE - BORDER + 1)/2;
         t->y_tel[i] = YWIN - LINE;
     }
@@ -115,7 +127,10 @@ void init_parameters(struct telescopes* t){
 }
 
 void init_dial(){
-
+    int i;
+    int j;
+    char nl[6][14];
+    char ml[6][14];
     DIALOG options[] = {
         /* (dialog proc) (x) (y) (w) (h) (fg) (bg) (key) (flags) (d1) (d2) (dp) (dp2) (dp3) */
         {d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC, 0, 0, 0, 0, NULL, NULL, NULL},
@@ -150,11 +165,30 @@ void init_dial(){
         {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL}
     };
 
+    DIALOG two[27];
+    two[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC, 0, 0, 0, 0, NULL, NULL, NULL};
+    j = 1;
+    for(i = 0; i < N; i++){
+        sprintf(nl[i], "Noise level %d", i + 1);
+        two[j] = (DIALOG){d_text_proc, LINE + BORDER, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, nl[i], NULL, NULL};
+        j++;
+        two[j] = (DIALOG){d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[i], NULL, NULL};
+        j++;
+        sprintf(ml[i], "Motor level %d", i + 1);
+        two[j] = (DIALOG){d_text_proc, LINE + N*TEXT_W, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, ml[i], NULL, NULL};
+        j++;
+        two[j] = (DIALOG){d_edit_proc, LINE + N*BORDER + N*TEXT_W, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, motor_modification[i], NULL, NULL};
+        j++;
+    }
+    two[j] = (DIALOG) {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2, 40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL};
+    j++;
+    two[j] = (DIALOG) {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL};
+
     textout_centre_ex(screen, font, "You can selecet the value (in percentage) of telescopes parameters",
                          XWIN / 2, BORDER, 14, 0);
     textout_centre_ex(screen, font, "[If you leave blank, default parameters will be used]",
                          XWIN / 2, 2*BORDER, 14, 0);
-    do_dialog(options, -1);
+    do_dialog(two, -1);
 }
 
 void init(){
@@ -250,9 +284,9 @@ void start_acquisition(int i){
         for(j = 0; j < tel.noise_level[i]; j++){
             x = rand() % OBS_SHAPE;
             y = rand() % OBS_SHAPE;
-            //c = rand() % 2;
+            c = rand() % 50 - 100;
             //if(c == 1)
-                c = 255;
+                c += getpixel(tel.observation[i], x, y);
             putpixel(tel.observation[i], x, y, c);
         }
 
@@ -470,6 +504,21 @@ int find_majority_col(int col[]){
     return c;
 }
 
+int mean_pixel(int col[]){
+    int i, j;
+    int n;
+    int c;
+    int sum = 0;
+
+    for(int i=0; i<N; i++){
+        sum += col[i];
+    }
+
+    c = sum / N;
+
+    return c;
+}
+
 void compute_result(){
     int x, y;
     int i;
@@ -490,12 +539,13 @@ void compute_result(){
             //fprintf(stderr, "final c: %d\n", c);
 
             c = find_majority_col(col);
+            //c = mean_pixel(col);
 
             putpixel(result, x, y, c);
         }
     PALETTE pal;
     get_palette(pal);
-    save_bitmap("result.bmp", result, pal);
+    save_bitmap("../media/result.bmp", result, pal);
 
     tel.elaborated = 1;
 

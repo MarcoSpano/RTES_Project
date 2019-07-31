@@ -61,6 +61,7 @@ void gui_param_interface(BITMAP *buffer){
     int i;
     char s[12];
     char nl[16];
+    char ml[16];
 
     rectfill(buffer, XDIAG, YDIAG, XDIAG + WDIAG, YDIAG+HDIAG, BGC);
         rect(buffer, XDIAG, YDIAG, XDIAG + WDIAG - 1, YDIAG + HDIAG, 15);
@@ -69,9 +70,13 @@ void gui_param_interface(BITMAP *buffer){
             sprintf(s, "Telescope %d", i+1);
             textout_ex(buffer, font, s, XDIAG + BORDER,
              YDIAG + TBLOCK*(i) + BORDER, 15, 0);
-            sprintf(nl, "noise level: %d", tel.noise_level[i]);
+            sprintf(nl, "noise level: %d%%", tel.noise_level[i] / NOISE_VAL_MULTIPLIER);
             textout_ex(buffer, font, nl, XDIAG + BORDER*2,
              YDIAG + TBLOCK*(i) + BORDER*2, 15, 0);
+
+            sprintf(nl, "motor level: %d%%", tel.motor_level[i] * 10);
+            textout_ex(buffer, font, nl, XDIAG + BORDER*2,
+             YDIAG + TBLOCK*(i) + BORDER*3, 15, 0);
         }
 }
 
