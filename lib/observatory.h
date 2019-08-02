@@ -25,7 +25,8 @@
 #define PRIO 80  /* task priority		*/
 #define MAX_NOISE 100 /* Massimo rumore in percentuale */
 #define DEFAULT_NOISE 50 /* Rumore standard in percentuale */
-#define NOISE_VAL_MULTIPLIER 25 /* Usato per moltiplicare la percentale di rumore */
+#define NOISE_VAL_MULTIPLIER 50 /* Usato per moltiplicare la percentale di rumore */
+#define DEFAULT_MOTOR 10 /* Velocità standard di un motore */
 
 #define OBSERVATION 0
 #define TRACKING 1
@@ -86,6 +87,8 @@ BITMAP *result; /* Bitmap con il risultato dell'elaborazione    */
 
 char noise_modification[6][3]; /* Contiene il valore per modificare il rumore */
 char motor_modification[6][3]; /* Contiene il valore per modificare il la velocità del motore */
+
+int finished; /* A 1 se il programma deve finire */
 
 extern void init();
 

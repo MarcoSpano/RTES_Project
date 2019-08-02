@@ -113,4 +113,8 @@ void gui(){
         pthread_mutex_unlock(&mutex);
         ptask_wait_for_period();
     }
+
+    ptask_wait_for_period();
+
+    fprintf(stderr, "gui has finished\n");
 }

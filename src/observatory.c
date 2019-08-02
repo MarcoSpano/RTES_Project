@@ -18,11 +18,6 @@ void init_allegro(){
     enable_hardware_cursor();
 
     srand(time(NULL));
-
-    //textout_centre_ex(screen, font, "SPACE to begin the observation",
-    //                     XWIN / 2, YWIN / 2, 14, 0);
-    //textout_centre_ex(screen, font, "ESC exit", XWIN / 2, YWIN / 2 + 30, 14, 0);
-    //line(screen, 0, YWIN - LINE, XWIN, YWIN - LINE, 14);
 }
 
 void init_semaphores(struct telescopes* t){
@@ -33,8 +28,6 @@ void init_semaphores(struct telescopes* t){
     for(i=0; i<N; i++){
         pmux_create_pi(&t->acquisition[i]);
         pmux_create_pi(&t->tracking[i]);
-        //pthread_mutex_init(&acquisition[i], NULL);
-        //pthread_mutex_lock(&acquisition[i]);
     }
 
     pthread_mutex_init(&t->compute, NULL);
@@ -45,12 +38,14 @@ void init_coordinates(struct telescopes* t){
     int i;
 
     for(i=0; i<N; i++){
-        t->x_obs[i] = rand() % XWIN + OBS_SHAPE/2;
+        t->x_obs[i] = rand() % XWIN;
         if (t->x_obs[i] > XDIAG)
-            t->x_obs[i] -= OBS_SHAPE/2*3;
+            t->x_obs[i] -= OBS_SHAPE;
+
         t->y_obs[i] = rand() % YWIN + OBS_SHAPE/2;
         if (t->y_obs[i] > YWIN - BASE - OBS_SHAPE/2)
             t->y_obs[i] = YWIN - BASE - OBS_SHAPE;
+            
         t->x_angle[i] = 0;
 
         t->x_pred[i] = t->x_obs[i];
@@ -86,11 +81,21 @@ void init_bitmaps(struct telescopes* t){
     result = create_bitmap(OBS_SHAPE, OBS_SHAPE);
 }
 
-int check_value(int n){
+int check_value_noise(int n){
     if(n > MAX_NOISE)
         n = MAX_NOISE;
     else if(n < 0)
         n = DEFAULT_NOISE;
+    
+    return n;
+}
+
+int check_value_motor(int n){
+    if(n > MAX_NOISE)
+        n = MAX_NOISE;
+    else if(n <= 0)
+        n = DEFAULT_MOTOR;
+    
     return n;
 }
 
@@ -106,14 +111,14 @@ void init_parameters(struct telescopes* t){
             n = DEFAULT_NOISE;
         else{
             n = strtol(noise_modification[i], &endptr, 10);
-            n = check_value(n);
+            n = check_value_noise(n);
         }
 
         if(motor_modification[i][0] == 0)
-            m = DEFAULT_NOISE;
+            m = DEFAULT_MOTOR;
         else{
             m = strtol(motor_modification[i], &endptr, 10);
-            m = check_value(m);
+            m = check_value_motor(m);
         }
         t->noise_level[i] = n * NOISE_VAL_MULTIPLIER;
         t->motor_level[i] = m / 10;
@@ -232,6 +237,7 @@ void planet(){
         
         ptask_wait_for_period();
     }
+    fprintf(stderr, "planet has finished\n");
 }
 
 void start_acquisition(int i){
@@ -320,6 +326,8 @@ void telescope(){
     }
 
     ptask_wait_for_period();
+
+    fprintf(stderr, "telescope %d has finished\n", i);
 }
 
 //_____________________________________________________________________________
@@ -438,7 +446,7 @@ void telescope_motor(){
     int x, y;   // Posizione attuale
     double angle;
 
-    while(1){
+    while(tel.telescope_state[i] != ACQUIRED){
         pthread_mutex_lock(&tel.tracking[i]);
         pthread_mutex_lock(&mutex);
         
@@ -469,6 +477,8 @@ void telescope_motor(){
         
         ptask_wait_for_period();
     }
+
+    fprintf(stderr, "motor %d has finished\n", i);
 }
 
 //_____________________________________________________________________________
@@ -550,4 +560,6 @@ void compute_result(){
     tel.elaborated = 1;
 
     pthread_mutex_unlock(&mutex);
+
+    fprintf(stderr, "compute has finished\n");
 }

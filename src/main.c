@@ -7,11 +7,12 @@ int main(void){
     int max_proc = ptask_getnumcores(); /* max number of procs  */
     char s[12];
     char nl[15];
+    int x1, y1, x2, y2;
 
+    finished = 0;
     init();
     clear_to_color(screen, BGC);
 
-    int x1, y1, x2, y2;
     do{
         if (keypressed()) {
             c = readkey();
@@ -31,24 +32,11 @@ int main(void){
         }
     }while(k != KEY_SPACE);
     
-   
-
     clear_to_color(screen, BGC);
     
     line(screen, 0, YWIN - BASE, XWIN, YWIN - BASE, 14); 
-    tpars params = TASK_SPEC_DFL;
-    params.period = tspec_from(PER, MILLI);
-    params.rdline = tspec_from(DREL, MILLI);
-    params.priority = PRIO;
-    params.measure_flag = 1;
-    params.act_flag = NOW;
-    params.processor = last_proc++;
-    if (last_proc >= max_proc)
-        last_proc = 0;
-    //ptask_param_init(params);
 
-    /* Crea pianeta */
-    i = ptask_create_param(planet, &params);
+    i = ptask_create_prio(planet, PER, PRIO, NOW);
     if (i != -1) {
         printf("Planet, %d created and activated\n", i);
         
@@ -60,13 +48,9 @@ int main(void){
 
     /* Crea telescope motor */
     for(k = 0; k < N; k++){
-        params.processor = last_proc++;
-        if (last_proc >= max_proc)
-            last_proc = 0;
-        i = ptask_create_param(telescope_motor, &params);
+        i = ptask_create_prio(telescope_motor, PER, PRIO, NOW);
         if (i != -1) {
             printf("Telescope motor, %d created and activated\n", i);
-            
         } else {
             allegro_exit();
             printf("Error in creating task!\n");
@@ -75,10 +59,7 @@ int main(void){
     }
     /* Crea telescope */
     for(k = 0; k < N; k++){
-        params.processor = last_proc++;
-        if (last_proc >= max_proc)
-            last_proc = 0;
-        i = ptask_create_param(telescope, &params);
+        i = ptask_create_prio(telescope, PER, PRIO, NOW);
         if (i != -1) {
             printf("Telescope acquisition, %d created and activated\n", i);
             
@@ -90,14 +71,9 @@ int main(void){
     }
 
     /* Crea gui */
-    params.processor = last_proc++;
-    if (last_proc >= max_proc)
-        last_proc = 0;
-    //ptask_param_init(params);
-    i = ptask_create_param(gui, &params);
+    i = ptask_create_prio(gui, PER, PRIO, NOW);
     if (i != -1) {
         printf("gui, %d created and activated\n", i);
-        
     } else {
         allegro_exit();
         printf("Error in creating task!\n");
@@ -105,14 +81,9 @@ int main(void){
     }
 
     /* Crea elaboratori */
-    params.processor = last_proc++;
-    if (last_proc >= max_proc)
-        last_proc = 0;
-    //ptask_param_init(params);
-    i = ptask_create_param(compute_result, &params);
+    i = ptask_create_prio(compute_result, PER, PRIO, NOW);
     if (i != -1) {
         printf("compute, %d created and activated\n", i);
-        
     } else {
         allegro_exit();
         printf("Error in creating task!\n");
@@ -128,7 +99,7 @@ int main(void){
         
     } while (k != KEY_ESC);
 
-    //pthread_mutex_lock(&mutex);
+    
     allegro_exit();
     sleep(1);
     
