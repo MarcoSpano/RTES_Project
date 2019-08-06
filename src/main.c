@@ -12,7 +12,7 @@ int main(void){
     finished = 0;
     init();
     clear_to_color(screen, BGC);
-
+    /*
     do{
         if (keypressed()) {
             c = readkey();
@@ -27,15 +27,20 @@ int main(void){
             sprintf(s, "Telescope %d", i+1);
             textout_ex(screen, font, s, BORDER + i * XWIN/N, YWIN - LINE + BORDER, 15, 0);
             sprintf(nl, "noise level: %d", tel.noise_level[i]);
-            textout_ex(screen, font, nl, BORDER * 2 + i * XWIN/N, YWIN -LINE + BORDER * 2, 15, 0);
+            textout_ex(screen, font, nl, BORDER * 2 + i * XWIN/N, YWIN - LINE + BORDER * 2, 15, 0);
             line(screen, (i+1) * XWIN/N, YWIN -LINE, (i+1) * XWIN/N, YWIN, 15);
         }
+
     }while(k != KEY_SPACE);
+    */
+
+    start_ui();
     
     clear_to_color(screen, BGC);
     
     line(screen, 0, YWIN - BASE, XWIN, YWIN - BASE, 14); 
 
+    /* Creates planet */
     i = ptask_create_prio(planet, PER, PRIO, NOW);
     if (i != -1) {
         printf("Planet, %d created and activated\n", i);
@@ -46,7 +51,7 @@ int main(void){
         exit(-1);
     }
 
-    /* Crea telescope motor */
+    /* Creates telescope motor */
     for(k = 0; k < N; k++){
         i = ptask_create_prio(telescope_motor, PER, PRIO, NOW);
         if (i != -1) {
@@ -70,7 +75,7 @@ int main(void){
         }     
     }
 
-    /* Crea gui */
+    /* Creates gui */
     i = ptask_create_prio(gui, PER, PRIO, NOW);
     if (i != -1) {
         printf("gui, %d created and activated\n", i);
@@ -80,7 +85,7 @@ int main(void){
         exit(-1);
     }
 
-    /* Crea elaboratori */
+    /* Creates elaboratori */
     i = ptask_create_prio(compute_result, PER, PRIO, NOW);
     if (i != -1) {
         printf("compute, %d created and activated\n", i);

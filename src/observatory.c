@@ -38,9 +38,9 @@ void init_coordinates(struct telescopes* t){
     int i;
 
     for(i=0; i<N; i++){
-        t->x_obs[i] = rand() % XWIN;
+        t->x_obs[i] = rand() % XWIN + OBS_SHAPE;
         if (t->x_obs[i] > XDIAG)
-            t->x_obs[i] -= OBS_SHAPE;
+            t->x_obs[i] -= OBS_SHAPE*2;
 
         t->y_obs[i] = rand() % YWIN + OBS_SHAPE/2;
         if (t->y_obs[i] > YWIN - BASE - OBS_SHAPE/2)
@@ -136,64 +136,41 @@ void init_dial(){
     int j;
     char nl[6][14];
     char ml[6][14];
-    DIALOG options[] = {
-        /* (dialog proc) (x) (y) (w) (h) (fg) (bg) (key) (flags) (d1) (d2) (dp) (dp2) (dp3) */
-        {d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC, 0, 0, 0, 0, NULL, NULL, NULL},
 
-        {d_text_proc, LINE + BORDER, LINE + BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 1", NULL, NULL},
-
-        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[0], NULL, NULL},
-
-        {d_text_proc, LINE + BORDER, LINE + 2*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 2", NULL, NULL},
-
-        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 2*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[1], NULL, NULL},
-
-        {d_text_proc, LINE + BORDER, LINE + 3*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 3", NULL, NULL},
-
-        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 3*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[2], NULL, NULL},
-
-        {d_text_proc, LINE + BORDER, LINE + 4*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 4", NULL, NULL},
-
-        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 4*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[3], NULL, NULL},
-
-        {d_text_proc, LINE + BORDER, LINE + 5*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 5", NULL, NULL},
-
-        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 5*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[4], NULL, NULL},
-
-        {d_text_proc, LINE + BORDER, LINE + 6*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, "Noise level 6", NULL, NULL},
-
-        {d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + 6*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[5], NULL, NULL},
-
-        {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2, 40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL},
-
-        /* Final object */
-        {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL}
-    };
-
-    DIALOG two[27];
-    two[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC, 0, 0, 0, 0, NULL, NULL, NULL};
+    DIALOG options[27];
+    options[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC,
+     0, 0, 0, 0, NULL, NULL, NULL};
     j = 1;
     for(i = 0; i < N; i++){
         sprintf(nl[i], "Noise level %d", i + 1);
-        two[j] = (DIALOG){d_text_proc, LINE + BORDER, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, nl[i], NULL, NULL};
+        options[j] = (DIALOG){d_text_proc, LINE + BORDER, LINE + (i + 1)*BORDER,
+         TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, nl[i], NULL, NULL};
         j++;
-        two[j] = (DIALOG){d_edit_proc, LINE + 3*BORDER + TEXT_W, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, noise_modification[i], NULL, NULL};
+        options[j] = (DIALOG){d_edit_proc, LINE + 3*BORDER + TEXT_W,
+         LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0,
+          noise_modification[i], NULL, NULL};
         j++;
         sprintf(ml[i], "Motor level %d", i + 1);
-        two[j] = (DIALOG){d_text_proc, LINE + N*TEXT_W, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, ml[i], NULL, NULL};
+        options[j] = (DIALOG){d_text_proc, LINE + N*TEXT_W, LINE + (i + 1)*BORDER,
+         TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, ml[i], NULL, NULL};
         j++;
-        two[j] = (DIALOG){d_edit_proc, LINE + N*BORDER + N*TEXT_W, LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0, motor_modification[i], NULL, NULL};
+        options[j] = (DIALOG){d_edit_proc, LINE + N*BORDER + N*TEXT_W,
+         LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0,
+          motor_modification[i], NULL, NULL};
         j++;
     }
-    two[j] = (DIALOG) {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2, 40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL};
+    options[j] = (DIALOG) {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2,
+     40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL};
     j++;
-    two[j] = (DIALOG) {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL};
+    options[j] = (DIALOG) {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL};
 
-    textout_centre_ex(screen, font, "You can selecet the value (in percentage) of telescopes parameters",
-                         XWIN / 2, BORDER, 14, 0);
-    textout_centre_ex(screen, font, "[If you leave blank, default parameters will be used]",
-                         XWIN / 2, 2*BORDER, 14, 0);
-    do_dialog(two, -1);
+    textout_centre_ex(screen, font,
+     "You can selecet the value (in percentage) of telescopes parameters",
+      XWIN / 2, BORDER, 14, 0);
+    textout_centre_ex(screen, font,
+     "[If you leave blank, default parameters will be used]", 
+     XWIN / 2, 2*BORDER, 14, 0);
+    do_dialog(options, -1);
 }
 
 void init(){
@@ -274,16 +251,11 @@ void start_acquisition(int i){
         }
 
     if(tel.telescope_state[i] != OBSERVATION){
-
         x_tmp = x_tmp / sum;
         y_tmp = y_tmp / sum;
-        
-        //fprintf(stderr, "i: %d, x_pred: %d, y_pred: %d\n", i, x_tmp, y_tmp);
 
         tel.x_pred[i] = tel.x_obs[i] - OBS_SHAPE/2 + x_tmp;
         tel.y_pred[i] = tel.y_obs[i] - OBS_SHAPE/2 + y_tmp;
-
-        //fprintf(stderr, "i: %d, dx: %d, dy: %d\n", i, x_pred[i] - x_obs[i], y_pred[i] - y_obs[i]);
     }
 
     if(tel.telescope_state[i] != ACQUIRED)
@@ -315,7 +287,6 @@ void end_acquisition(int i){
 void telescope(){
     int i;
     i = ptask_get_index() - N - 1;
-    //fprintf(stderr, "i: %d\n", i);
 
     while(1){
         start_acquisition(i);
@@ -366,9 +337,6 @@ double compute_xangle(struct telescopes* t, int i){
     
     tn = (m1 - m2)/(1 + m1*m2);
 
-    //if(tn < 0)
-    //    tn = -tn;
-
     return atan(tn);
 }
 
@@ -385,9 +353,6 @@ double compute_yangle(struct telescopes* t, int i){
     //fprintf(stderr, "%d, m1: %lf + m2: %lf\n", i, m1, m2);
     
     tn = (m1 - m2)/(1 + m1*m2);
-
-    //if(tn < 0)
-    //    tn = -tn;
 
     return atan(tn);
 }
@@ -407,14 +372,6 @@ void xmotor(double angle, int i){
         delta = -1;
 
     tel.x_obs[i] += delta;
-
-    //if(angle > 0){
-    //    tel.x_obs[i] += 5*x;
-    //}
-    //else 
-    //    tel.x_obs[i] -= 5*x;
-
-    //tel.x_obs[i] += (int)round(x);
 }
 
 void ymotor(double angle, int i){
@@ -431,13 +388,6 @@ void ymotor(double angle, int i){
         delta = -1;
 
     tel.y_obs[i] -= delta;
-
-    //if(angle > 0)
-    //    tel.y_obs[i] -= 1;
-    //else if(angle < 0)
-    //    tel.y_obs[i] += 1;
-
-    //tel.y_obs[i] += y;
 }
 
 void telescope_motor(){
@@ -465,11 +415,14 @@ void telescope_motor(){
         }
         
         if(tel.telescope_state[i] == TRACKING){
-            if((tel.x_obs[i] == tel.x_pred[i]) && (tel.y_obs[i] == tel.y_pred[i])){
-                tel.telescope_state[i] = ACQUIRED;
-                tel.completed++;
+            if(tel.x_obs[i] == tel.x_pred[i]){
+                if(tel.y_obs[i] == tel.y_pred[i]){
+                    tel.telescope_state[i] = ACQUIRED;
+                    tel.completed++;
+                }
             }
         }
+
         if(tel.telescope_state[i] != ACQUIRED)
             pthread_mutex_unlock(&tel.tracking[i]);
 

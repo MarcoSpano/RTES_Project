@@ -4,4 +4,6 @@
 
 extern void gui();
 
+extern void start_ui();
+
 #endif

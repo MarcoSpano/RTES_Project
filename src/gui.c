@@ -1,5 +1,49 @@
 #include "../lib/observatory.h"
 
+void start_ui(){
+    int c;
+    int i, k;
+    char s[12];
+    char nl[16];
+    char ml[16];
+    int x, y;
+
+    do{
+        if (keypressed()) {
+            c = readkey();
+            k = c >> 8;
+        }
+
+        for(i = 0; i < N; i++){
+            textout_centre_ex(screen, font, "SPACE to begin the observation",
+                         XWIN / 2, YWIN / 2, 14, 0);
+            line(screen, 0, YWIN - LINE, XWIN, YWIN - LINE, 14);
+
+            x = BORDER + i * XWIN/N;
+            y = YWIN - LINE + BORDER;
+            sprintf(s, "Telescope %d", i+1);
+            textout_ex(screen, font, s, x, y, 15, 0);
+
+            x += BORDER;
+            y += BORDER;
+            sprintf(nl, "noise level: %d", tel.noise_level[i]);
+            textout_ex(screen, font, nl, x, y, 15, 0);
+
+            y += BORDER;
+            sprintf(ml, "motor level: %d", tel.motor_level[i]);
+            textout_ex(screen, font, ml, x, y, 15, 0);
+
+
+            line(screen, (i+1) * XWIN/N, YWIN -LINE, (i+1) * XWIN/N, YWIN, 15);
+        }
+            
+    }while(k != KEY_SPACE);
+
+    clear_to_color(screen, BGC);
+    
+    line(screen, 0, YWIN - BASE, XWIN, YWIN - BASE, 14); 
+}
+
 void gui_planet(BITMAP *buffer){
     int x, y;
 
@@ -37,10 +81,13 @@ void gui_telescopes(BITMAP *buffer){
             if((mouse_x > x1) && (mouse_x < x2)){
                 if((mouse_y > y1) && (mouse_y < y2)){
                     // Scrivo observation window sul buffer.
-                    rect(buffer, tel.x_obs[i] - OBS_SHAPE/2, tel.y_obs[i] - OBS_SHAPE/2,
-                            tel.x_obs[i] + OBS_SHAPE/2, tel.y_obs[i] + OBS_SHAPE/2, 14);
-                    line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_obs[i], tel.y_obs[i], 14);
-                    line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_pred[i], tel.y_pred[i], 30);
+                    rect(buffer, tel.x_obs[i] - OBS_SHAPE/2,
+                     tel.y_obs[i] - OBS_SHAPE/2, tel.x_obs[i] + OBS_SHAPE/2,
+                      tel.y_obs[i] + OBS_SHAPE/2, 14);
+                    line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_obs[i],
+                     tel.y_obs[i], 14);
+                    line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_pred[i],
+                     tel.y_pred[i], 30);
                 }
             }
         }
@@ -60,8 +107,8 @@ void gui_telescopes(BITMAP *buffer){
 void gui_param_interface(BITMAP *buffer){
     int i;
     char s[12];
-    char nl[16];
-    char ml[16];
+    char nl[17];
+    char ml[17];
 
     rectfill(buffer, XDIAG, YDIAG, XDIAG + WDIAG, YDIAG+HDIAG, BGC);
         rect(buffer, XDIAG, YDIAG, XDIAG + WDIAG - 1, YDIAG + HDIAG, 15);
@@ -90,7 +137,7 @@ void gui(){
     char nl[16];
 
     buffer = create_bitmap(XWIN,YWIN);
-    while(1){
+    while(!finished){
         pthread_mutex_lock(&mutex);
 
         clear_to_color(buffer, BGC);
