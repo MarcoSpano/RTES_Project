@@ -34,7 +34,7 @@ void start_ui(){
             textout_ex(screen, font, ml, x, y, 15, 0);
 
 
-            line(screen, (i+1) * XWIN/N, YWIN -LINE, (i+1) * XWIN/N, YWIN, 15);
+            line(screen, (i+1) * XWIN/N, YWIN - LINE, (i+1) * XWIN/N, YWIN, 15);
         }
             
     }while(k != KEY_SPACE);

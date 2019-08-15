@@ -3,42 +3,12 @@
 int main(void){
     int c;
     int i, k;
-    int last_proc = 0;  /* last assigned processor  */
-    int max_proc = ptask_getnumcores(); /* max number of procs  */
-    char s[12];
-    char nl[15];
-    int x1, y1, x2, y2;
 
     finished = 0;
     init();
     clear_to_color(screen, BGC);
-    /*
-    do{
-        if (keypressed()) {
-            c = readkey();
-            k = c >> 8;
-        }
-
-        for(i = 0; i < N; i++){
-            textout_centre_ex(screen, font, "SPACE to begin the observation",
-                         XWIN / 2, YWIN / 2, 14, 0);
-            line(screen, 0, YWIN - LINE, XWIN, YWIN - LINE, 14);
-            
-            sprintf(s, "Telescope %d", i+1);
-            textout_ex(screen, font, s, BORDER + i * XWIN/N, YWIN - LINE + BORDER, 15, 0);
-            sprintf(nl, "noise level: %d", tel.noise_level[i]);
-            textout_ex(screen, font, nl, BORDER * 2 + i * XWIN/N, YWIN - LINE + BORDER * 2, 15, 0);
-            line(screen, (i+1) * XWIN/N, YWIN -LINE, (i+1) * XWIN/N, YWIN, 15);
-        }
-
-    }while(k != KEY_SPACE);
-    */
-
+    
     start_ui();
-    
-    clear_to_color(screen, BGC);
-    
-    line(screen, 0, YWIN - BASE, XWIN, YWIN - BASE, 14); 
 
     /* Creates planet */
     i = ptask_create_prio(planet, PER, PRIO, NOW);
