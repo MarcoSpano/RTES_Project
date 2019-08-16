@@ -35,7 +35,7 @@
 
 #define XDIAG XWIN - BASE
 #define YDIAG 1
-#define WDIAG BASE
+#define WDIAG XWIN - XDIAG
 #define HDIAG YWIN - LINE - 1
 #define TBLOCK BORDER * 4
 #define RY 520

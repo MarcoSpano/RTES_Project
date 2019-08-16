@@ -110,13 +110,14 @@ void gui_param_interface(BITMAP *buffer){
     char nl[17];
     char ml[17];
 
-    rectfill(buffer, XDIAG, YDIAG, XDIAG + WDIAG, YDIAG+HDIAG, BGC);
-        rect(buffer, XDIAG, YDIAG, XDIAG + WDIAG - 1, YDIAG + HDIAG, 15);
+    rectfill(buffer, XDIAG, YDIAG, XWIN, YDIAG+HDIAG, BGC);
+    rect(buffer, XDIAG, YDIAG, XWIN - 1, YDIAG + HDIAG, 15);
 
         for(i = 0; i < N; i++){
             sprintf(s, "Telescope %d", i+1);
             textout_ex(buffer, font, s, XDIAG + BORDER,
              YDIAG + TBLOCK*(i) + BORDER, 15, 0);
+
             sprintf(nl, "noise level: %d%%", tel.noise_level[i] / NOISE_VAL_MULTIPLIER);
             textout_ex(buffer, font, nl, XDIAG + BORDER*2,
              YDIAG + TBLOCK*(i) + BORDER*2, 15, 0);
@@ -151,6 +152,10 @@ void gui(){
 
         /* Interfaccia di modifica dei parametri */
         gui_param_interface(buffer);
+
+        if(tel.elaborated == 1)
+            textout_centre_ex(buffer, font, "ESC to exit the program",
+                         XWIN / 2, BORDER, 14, 0);
 
         // mostro il mouse
         show_mouse(buffer);

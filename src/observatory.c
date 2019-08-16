@@ -228,7 +228,7 @@ void planet(){
     int y = 100;
     float i = 0;
 
-    while((planet_x < XDIAG + OBS_SHAPE/2) && !finished){
+    while(planet_x < (XDIAG + OBS_SHAPE/2) && !finished){
         pthread_mutex_lock(&mutex);
         i += planet_vx * PER;
         planet_x = (int)(i + OBS_SHAPE/2);
@@ -296,11 +296,11 @@ void start_acquisition(int i){
 void end_acquisition(int i){
     pthread_mutex_lock(&mutex);
 
-    if(tel.completed == N){
-        fprintf(stderr, "Hanno tutti completato!\n");
-        pthread_mutex_unlock(&tel.compute);
-        tel.completed = 0;
-    }
+    //if(tel.completed == N){
+    //    fprintf(stderr, "Hanno tutti completato!\n");
+    //    pthread_mutex_unlock(&tel.compute);
+    //    tel.completed = 0;
+    //}
     if(tel.telescope_state[i] != ACQUIRED)
         pthread_mutex_unlock(&tel.acquisition[i]);
     pthread_mutex_unlock(&mutex);
@@ -310,12 +310,18 @@ void telescope(){
     int i;
     i = ptask_get_index() - N - 1;
 
-    while(!finished){
+    while(!finished && (tel.telescope_state[i] != ACQUIRED)){
         start_acquisition(i);
 
         end_acquisition(i);
 
         ptask_wait_for_period();
+    }
+
+    if(tel.completed == N){
+        fprintf(stderr, "Hanno tutti completato!\n");
+        pthread_mutex_unlock(&tel.compute);
+        tel.completed = 0;
     }
 
     ptask_wait_for_period();
@@ -330,15 +336,6 @@ void telescope(){
 
 //_____________________________________________________________________________
 //_____________________________________________________________________________
-
-
-double square_difference(int x1, int y1, int x2, int y2){
-    int sqdiff_x, sqdiff_y;
-    sqdiff_x = (x2 - x1) * (x2 - x1);
-    sqdiff_y = (y2 - y1) * (y2 - y1);
-
-    return sqrt(sqdiff_x + sqdiff_y);
-}
 
 double compute_xangle(struct telescopes* t, int i){
     
@@ -506,6 +503,8 @@ void compute_result(){
     int i;
     int c;
     int col[N];
+    PALETTE pal;
+
     pthread_mutex_lock(&tel.compute);
     pthread_mutex_lock(&mutex);
 
@@ -525,11 +524,14 @@ void compute_result(){
 
             putpixel(result, x, y, c);
         }
-    PALETTE pal;
+    
     get_palette(pal);
     save_bitmap("../media/result.bmp", result, pal);
 
     tel.elaborated = 1;
+
+    //for(i = 0; i < N; i++)
+    //    pthread_mutex_unlock(&tel.acquisition[i]);
 
     pthread_mutex_unlock(&mutex);
 

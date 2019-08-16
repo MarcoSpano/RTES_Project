@@ -37,7 +37,6 @@ int main(void){
         i = ptask_create_prio(telescope, PER, PRIO, NOW);
         if (i != -1) {
             printf("Telescope acquisition, %d created and activated\n", i);
-            
         } else {
             allegro_exit();
             printf("Error in creating task!\n");
@@ -74,9 +73,10 @@ int main(void){
         
     } while (k != KEY_ESC);
 
+    pthread_mutex_lock(&mutex);
     
     allegro_exit();
-    sleep(1);
+    //sleep(1);
     
     return 0;
 }
