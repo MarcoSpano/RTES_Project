@@ -8,7 +8,9 @@
 //_____________________________________________________________________________
 //_____________________________________________________________________________
 
-/* This function inizializes all Allegro parameters */
+/**
+ *  Intitializes all Allegro parameters. 
+*/
 void init_allegro(){
     allegro_init();
     set_gfx_mode(GFX_AUTODETECT_WINDOWED, XWIN, YWIN, 0, 0);
@@ -20,9 +22,12 @@ void init_allegro(){
     srand(time(NULL));
 }
 
-/* This function inizializes all semphores */
+/**
+ * Intitializes all semphores. 
+ * @param   : struct telescopes* t; the telescopes
+*/
 void init_semaphores(struct telescopes* t){
-    int i;
+    int     i;
 
     pmux_create_pi(&mutex);
 
@@ -35,29 +40,27 @@ void init_semaphores(struct telescopes* t){
     pthread_mutex_lock(&t->compute);
 }
 
-/* This function inizializes all coordinates (x,y)
- of the objects in the simulation */
+/**
+ * Intitializes all coordinates (x,y) of the objects in the simulation. 
+ * @param: struct telescopes* t: the telescopes.
+*/
 void init_coordinates(struct telescopes* t){
-    int i;
-    int x, y;
+    int     i;
+    int     x, y;
 
     for(i=0; i<N; i++){
          
         x = rand() % (XDIAG - OBS_SHAPE/2) ;
-        if (x <= OBS_SHAPE/2)
-            x += OBS_SHAPE/2;
+        if (x <= OBS_SHAPE / 2)
+            x += OBS_SHAPE / 2;
 
         t->x_obs[i] = x;
 
         y = rand() % (OBS_SHAPE / 2) - OBS_SHAPE / 4;
         y += 260;
 
-        //t->x_obs[i] = x;
         t->y_obs[i] = y;    
         t->x_angle[i] = 0;
-
-        //t->x_obs[i] = 500;
-        //t->y_obs[i] = 200;
 
         t->x_pred[i] = t->x_obs[i];
         t->y_pred[i] = t->y_obs[i];
@@ -65,21 +68,25 @@ void init_coordinates(struct telescopes* t){
         fprintf(stderr, "%d) x: %d, y: %d\n", i, t->x_pred[i], t->y_pred[i]);
     }
 
-    planet_x = 100;
-    planet_y = 100 + OBS_SHAPE/2;
+    planet_x = HUNDRED;
+    planet_y = HUNDRED + OBS_SHAPE/2;
 }
 
-/* This function inizializes planet velocity */
+/** 
+ * Intitializes planet velocity.
+ * @param: struct telescopes* t: the telescopes.
+*/
 void init_velocity(struct telescopes* t){
-    int i;
-
     planet_vx = 0.25 / PER;
     planet_vy = 0;
 }
 
-/* This function inizializes all Allegro bitmaps */
+/** 
+ * Intitializes all Allegro bitmaps.
+ * @param: struct telescopes* t: the telescopes.
+*/
 void init_bitmaps(struct telescopes* t){
-    int i;
+    int     i;  // A counter
 
     planet_img = load_bitmap("../media/Jupiter.bmp", NULL);
 
@@ -96,8 +103,12 @@ void init_bitmaps(struct telescopes* t){
     result = create_bitmap(OBS_SHAPE, OBS_SHAPE);
 }
 
-/* This functions checks the value of the noise parameter n,
-if it isn't in the correct range, a default value is used */
+/**
+ * Checks the value of the noise parameter n, if it isn't in the correct range,
+ * a default value is used.
+ * @param   : int n; value of noise. 
+ * @return  : int n; the checked value.
+*/
 int check_value_noise(int n){
     if(n > MAX_NOISE)
         n = MAX_NOISE;
@@ -107,26 +118,33 @@ int check_value_noise(int n){
     return n;
 }
 
-/* This functions checks the value of the motor parameter n,
-if it isn't in the correct range, a default value is used */
+/**
+ * This functions checks the value of the motor parameter n, 
+ * if it isn't in the correct range, a default value is used 
+ * @param   : int n; value of motor parameter.
+ * @return  : int n; the checked value.
+ */
 int check_value_motor(int n){
-    if(n > MAX_NOISE)
-        n = MAX_NOISE;
+    if(n > HUNDRED)
+        n = HUNDRED;
     else if(n <= 0)
         n = DEFAULT_MOTOR;
     
     return n;
 }
 
-/* This function inizializes all telescope's parameters */
+/** 
+ * This function inizializes all telescope's parameters.
+ * @param: struct telescopes* t: the telescopes.
+*/
 void init_parameters(struct telescopes* t){
-    int i;
-    char *endptr;
-    int n, m;
+    int     i;
+    char    *endptr;
+    int     n, m;
 
     for(i=0; i<N; i++){
         t->telescope_state[i] = OBSERVATION;
-        //centered[i] = 0;
+        
         if(noise_modification[i][0] == 0)
             n = DEFAULT_NOISE;
         else{
@@ -142,7 +160,7 @@ void init_parameters(struct telescopes* t){
         }
         t->noise_level[i] = n * NOISE_VAL_MULTIPLIER;
         t->motor_level[i] = m / 10;
-        t->x_tel[i] = i * (BASE - BORDER) + (BASE - BORDER + 1)/2;
+        t->x_tel[i] = i * (BASE - BORDER) + (BASE - BORDER + 1) / 2;
         t->y_tel[i] = YWIN - LINE;
     }
     t->completed = 0;
@@ -151,46 +169,59 @@ void init_parameters(struct telescopes* t){
 
 }
 
+void dial_info(){
+    textout_centre_ex(screen, font,
+        "You can selecet the value (in percentage) of telescopes parameters",
+        XWIN / 2, BORDER, 14, 0);
+    textout_centre_ex(screen, font,
+        "[If you leave blank, default parameters will be used]", 
+        XWIN / 2, 2*BORDER, 14, 0);
+}
+
+DIALOG make_text(int i, int x, char s[]){
+    return (DIALOG){d_text_proc, x, LINE + (i + 1) * BORDER, TEXT_W, TEXT_H,
+            RED, BGC, 0, 0, 0, 0, s, NULL, NULL};
+}
+
+DIALOG make_edit(int i, int x, char s[]){
+    return (DIALOG){d_edit_proc, x,
+            LINE + (i + 1) * BORDER, TEXT_W, TEXT_H, 0, RED, 0, 0, 9, 0,
+            s, NULL, NULL};
+}
+
 /* This function inizializes the initial dialog for parameters selection */
 void init_dial(){
-    int i;
-    int j;
-    char nl[6][14];
-    char ml[6][14];
+    int     i;
+    int     j;
+    char    nl[6][14];
+    char    ml[6][14];
+    DIALOG  options[27];
 
-    DIALOG options[27];
-    options[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, 15, BGC,
-     0, 0, 0, 0, NULL, NULL, NULL};
+    options[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, RED, BGC,
+        0, 0, 0, 0, NULL, NULL, NULL};
+    
     j = 1;
     for(i = 0; i < N; i++){
         sprintf(nl[i], "Noise level %d", i + 1);
-        options[j] = (DIALOG){d_text_proc, LINE + BORDER, LINE + (i + 1)*BORDER,
-         TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, nl[i], NULL, NULL};
+        options[j] = make_text(i, NOISE_X, nl[i]);
         j++;
-        options[j] = (DIALOG){d_edit_proc, LINE + 3*BORDER + TEXT_W,
-         LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0,
-          noise_modification[i], NULL, NULL};
+        options[j] = make_edit(i, NOISE_X + 2 * BORDER + TEXT_W,
+            noise_modification[i]);
         j++;
+
         sprintf(ml[i], "Motor level %d", i + 1);
-        options[j] = (DIALOG){d_text_proc, LINE + N*TEXT_W, LINE + (i + 1)*BORDER,
-         TEXT_W, TEXT_H, 15, BGC, 0, 0, 0, 0, ml[i], NULL, NULL};
+        options[j] = make_text(i, MOTOR_X, ml[i]);
         j++;
-        options[j] = (DIALOG){d_edit_proc, LINE + N*BORDER + N*TEXT_W,
-         LINE + (i + 1)*BORDER, TEXT_W, TEXT_H, 0, 15, 0, 0, 9, 0,
-          motor_modification[i], NULL, NULL};
+        options[j] = make_edit(i, MOTOR_X + N * BORDER, motor_modification[i]);
         j++;
     }
-    options[j] = (DIALOG) {d_button_proc, LINE + BORDER, LINE + DIALOG_H - BORDER*2,
-     40, 25, 10, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL};
+    options[j] = (DIALOG){d_button_proc, NOISE_X, LINE + DIALOG_H - BORDER * 2,
+        BUTTON_W, BUTTON_H, GREEN, 0, 0, D_EXIT, 0, 0, "OK", NULL, NULL};
     j++;
-    options[j] = (DIALOG) {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL};
+    options[j] = (DIALOG){NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL};
 
-    textout_centre_ex(screen, font,
-     "You can selecet the value (in percentage) of telescopes parameters",
-      XWIN / 2, BORDER, 14, 0);
-    textout_centre_ex(screen, font,
-     "[If you leave blank, default parameters will be used]", 
-     XWIN / 2, 2*BORDER, 14, 0);
+    dial_info();
+
     do_dialog(options, -1);
 }
 
@@ -222,11 +253,13 @@ void init(){
 //_____________________________________________________________________________
 //_____________________________________________________________________________
 
-/* This function makes the simulated planet move a certain value each period */
+/** 
+ * Makes the simulated planet move a certain value each period
+*/
 void planet(){
-    int x = 100;
-    int y = 100;
-    float i = 0;
+    int     x = 100;
+    int     y = 100;
+    float   i = 0;
 
     while(planet_x < (XDIAG + OBS_SHAPE/2) && !finished){
         pthread_mutex_lock(&mutex);
@@ -239,25 +272,27 @@ void planet(){
     fprintf(stderr, "planet has finished\n");
 }
 
-void start_acquisition(int i){
-    int x, y;
-    int c;
-    int j;
-    int x_tmp, y_tmp;
-    int sum;
-    
-    pthread_mutex_lock(&tel.acquisition[i]);
-    pthread_mutex_lock(&mutex);
-    //fprintf(stderr, "ok start!\n");
+/**
+ * Predicts the centroid of the image observed.
+ */
+void centroid_prediction(int i){
+    int     x, y;   // Counters
+    int     c;
+    int     x_tmp, y_tmp;
+    int     sum;
+    int     lb, ub; /*Variabili per ricavare le coordinate dello spigolo
+                     in alto a sinistra della finestra di osservazione */
 
     x_tmp = 0;
     y_tmp = 0;
     sum = 0;
+    lb = tel.x_obs[i] - OBS_SHAPE / 2;
+    ub = tel.y_obs[i] - OBS_SHAPE / 2;
 
     for(x = 1; x < OBS_SHAPE - 1; x++)
         for(y = 1; y < OBS_SHAPE - 1; y++){
-            c = getpixel(sky, tel.x_obs[i] - OBS_SHAPE/2 + x, tel.y_obs[i] - OBS_SHAPE/2 + y);
-            //fprintf(stderr, "i: %d, x: %d, y: %d\n", i, x, y);
+            c = getpixel(sky, lb + x, ub + y);
+            
             if(tel.telescope_state[i] != ACQUIRED)
                 putpixel(tel.observation[i], x, y, c);
 
@@ -269,7 +304,6 @@ void start_acquisition(int i){
                 if(tel.telescope_state[i] == OBSERVATION)
                     tel.telescope_state[i] = TRACKING;
             }
-            
         }
 
     if(tel.telescope_state[i] != OBSERVATION){
@@ -279,12 +313,28 @@ void start_acquisition(int i){
         tel.x_pred[i] = tel.x_obs[i] - OBS_SHAPE/2 + x_tmp;
         tel.y_pred[i] = tel.y_obs[i] - OBS_SHAPE/2 + y_tmp;
     }
+}
 
+/**
+ * Defines what telescope "i" see.
+ * @param   : int i; index of the telescope.
+ */
+void start_acquisition(int i){
+    int x, y;
+    int c;
+    int j;
+    
+    pthread_mutex_lock(&tel.acquisition[i]);
+    pthread_mutex_lock(&mutex);
+    
+    centroid_prediction(i);
+
+    // Adds noise to the observation, according to noise level parameter
     if(tel.telescope_state[i] != ACQUIRED)
         for(j = 0; j < tel.noise_level[i]; j++){
             x = rand() % OBS_SHAPE;
             y = rand() % OBS_SHAPE;
-            c = rand() % 50 - 100;
+            c = rand() % HUNDRED/2 - HUNDRED;
             
             c += getpixel(tel.observation[i], x, y);
             putpixel(tel.observation[i], x, y, c);
@@ -296,18 +346,18 @@ void start_acquisition(int i){
 void end_acquisition(int i){
     pthread_mutex_lock(&mutex);
 
-    //if(tel.completed == N){
-    //    fprintf(stderr, "Hanno tutti completato!\n");
-    //    pthread_mutex_unlock(&tel.compute);
-    //    tel.completed = 0;
-    //}
     if(tel.telescope_state[i] != ACQUIRED)
         pthread_mutex_unlock(&tel.acquisition[i]);
+    
     pthread_mutex_unlock(&mutex);
 }
 
+/**
+ * 
+ */
 void telescope(){
-    int i;
+    int i;  // Index of the task.
+
     i = ptask_get_index() - N - 1;
 
     while(!finished && (tel.telescope_state[i] != ACQUIRED)){
@@ -339,18 +389,23 @@ void telescope(){
 
 double compute_xangle(struct telescopes* t, int i){
     
-    double m1, m2, tn;
-    int y_obs, y_pred;
-    y_obs = sqrt(RX*RX - (t->x_obs[i]-t->x_tel[i])*(t->x_obs[i]-t->x_tel[i]));
-    y_pred = sqrt(RX*RX - (t->x_pred[i]-t->x_tel[i])*(t->x_pred[i]-t->x_tel[i]));
+    double  m1, m2, tn;
+    int     y_obs, y_pred;
+    int     delta_obs, delta_pred;
 
-    if((t->x_obs[i] - t->x_tel[i]) != 0)
-        m1 = (double)(y_obs) / (t->x_obs[i] - t->x_tel[i]);
+    delta_obs = t->x_obs[i] - t->x_tel[i];
+    delta_pred = t->x_pred[i] - t->x_tel[i];
+    
+    y_obs = sqrt(RX*RX - delta_obs * delta_obs);
+    y_pred = sqrt(RX*RX - delta_pred * delta_pred);
+
+    if(delta_obs != 0)
+        m1 = (double)(y_obs) / delta_obs;
     else
         m1 = 100;
 
-    if((t->x_pred[i]  - t->x_tel[i]) != 0)
-        m2 = (double)(y_pred) / (t->x_pred[i]  - t->x_tel[i]);
+    if(delta_pred != 0)
+        m2 = (double)(y_pred) / delta_pred;
     else
         m2 = 100;
     
@@ -361,15 +416,18 @@ double compute_xangle(struct telescopes* t, int i){
 
 double compute_yangle(struct telescopes* t, int i){
     
-    double m1, m2, tn;
-    int x_obs, x_pred;
-    x_obs = sqrt(RY*RY - (t->y_obs[i]-t->y_tel[i])*(t->y_obs[i]-t->y_tel[i]));
-    x_pred = sqrt(RY*RY - (t->y_pred[i]-t->y_tel[i])*(t->y_pred[i]-t->y_tel[i]));
-    
-    m1 = (double)(t->y_obs[i] - t->y_tel[i]) / (x_obs);
-    m2 = (double)(t->y_pred[i] - t->y_tel[i]) / (x_pred);
+    double  m1, m2, tn;
+    int     x_obs, x_pred;
+    int     delta_obs, delta_pred;
 
-    //fprintf(stderr, "%d, m1: %lf + m2: %lf\n", i, m1, m2);
+    delta_obs = t->y_obs[i] - t->y_tel[i];
+    delta_pred = t->y_pred[i] - t->y_tel[i];
+
+    x_obs = sqrt(RY*RY - delta_obs * delta_obs);
+    x_pred = sqrt(RY*RY - delta_pred * delta_pred);
+    
+    m1 = (double)(delta_obs) / (x_obs);
+    m2 = (double)(delta_pred) / (x_pred);
     
     tn = (m1 - m2)/(1 + m1*m2);
 
@@ -377,12 +435,12 @@ double compute_yangle(struct telescopes* t, int i){
 }
 
 void xmotor(double angle, int i){
-    float x;
-    float delta;
+    float   x;
+    float   delta;
 
     x = (angle * RX)/180;
 
-    delta = tel.motor_level[i]*x;
+    delta = tel.motor_level[i] * x;
     if(delta > 0 && delta < 1)
         delta = 1;
     else if(delta < 0 && delta > -1)
@@ -397,7 +455,8 @@ void ymotor(double angle, int i){
 
     y = (RY * angle)/180;
 
-    delta = tel.motor_level[i]*y;
+    delta = tel.motor_level[i] * y;
+
     if(delta > 0 && delta < 1)
         delta = 1;
     else if(delta < 0 && delta > -1)
@@ -407,10 +466,11 @@ void ymotor(double angle, int i){
 }
 
 void telescope_motor(){
-    int i;
+    int     i;
+    int     x, y;   // Posizione attuale
+    double  angle;
+
     i = ptask_get_index() - 1;
-    int x, y;   // Posizione attuale
-    double angle;
 
     while(tel.telescope_state[i] != ACQUIRED && !finished){
         pthread_mutex_lock(&tel.tracking[i]);
@@ -422,12 +482,10 @@ void telescope_motor(){
         if(abs(tel.x_pred[i] - tel.x_obs[i]) > 0){
             angle = compute_xangle(&tel, i);
             xmotor(angle, i);
-            //fprintf(stderr, "%d, xangle: %lf\n", i, angle);
         }
         if(abs(tel.y_pred[i] - tel.y_obs[i]) > 0){
             angle = compute_yangle(&tel, i);
             ymotor(angle, i);
-            //fprintf(stderr, "%d, yangle: %lf\n", i, angle/3.14*180);
         }
         
         if(tel.telescope_state[i] == TRACKING){
@@ -469,8 +527,6 @@ int find_majority_col(int col[]){
     for(i = 0; i < N; i++){
         n = 0;
         for(j = i; j < N; j++){
-            //fprintf(stderr, "i: %d, j: %d\n", col[i], col[j]);
-
             if(col[i] == col[j])
                 n++;
         }
@@ -499,10 +555,10 @@ int mean_pixel(int col[]){
 }
 
 void compute_result(){
-    int x, y;
-    int i;
-    int c;
-    int col[N];
+    int     x, y;
+    int     i;
+    int     c;
+    int     col[N];
     PALETTE pal;
 
     pthread_mutex_lock(&tel.compute);
@@ -515,23 +571,15 @@ void compute_result(){
             c = 0;
             for(i = 0; i < N; i++){
                 col[i] = getpixel(tel.observation[i], x, y);
-                //fprintf(stderr, "c: %d\n", c);
             }
-            //fprintf(stderr, "final c: %d\n", c);
 
             c = find_majority_col(col);
-            //c = mean_pixel(col);
-
             putpixel(result, x, y, c);
         }
     
     get_palette(pal);
     save_bitmap("../media/result.bmp", result, pal);
-
     tel.elaborated = 1;
-
-    //for(i = 0; i < N; i++)
-    //    pthread_mutex_unlock(&tel.acquisition[i]);
 
     pthread_mutex_unlock(&mutex);
 
