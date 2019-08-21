@@ -31,6 +31,7 @@
 #define N 6
 
 #define HUNDRED 100
+#define BIT_IN_BYTE 8
 #define RED 15
 #define YELLOW 14
 #define GREEN 10
@@ -62,26 +63,26 @@
 pthread_mutex_t mutex;
 
 struct telescopes{
-    pthread_mutex_t acquisition[N];
-    pthread_mutex_t tracking[N];
-    pthread_mutex_t compute;
+	pthread_mutex_t acquisition[N];
+	pthread_mutex_t tracking[N];
+	pthread_mutex_t compute;
 
-    int     x_obs[N];   /* Valore sull'asse x del centroide della finestra di osservazione    */
-    int     y_obs[N];   /* Valore sull'asse y del centroide della finestra di osservazione    */
-    float   x_tel[N];   /* Valore sull'asse x della posizione del telescopio    */
-    float   y_tel[N];   /* Valore sull'asse y della posizione del telescopio    */
-    float   x_angle[N]; /* Valore sull'asse x dell'angolo relativo al motore dei telescopi    */
+	int     x_obs[N];   /* Valore sull'asse x del centroide della finestra di osservazione    */
+	int     y_obs[N];   /* Valore sull'asse y del centroide della finestra di osservazione    */
+	float   x_tel[N];   /* Valore sull'asse x della posizione del telescopio    */
+	float   y_tel[N];   /* Valore sull'asse y della posizione del telescopio    */
+	float   x_angle[N]; /* Valore sull'asse x dell'angolo relativo al motore dei telescopi    */
 
-    int     telescope_state[N];  /* Stato di ogni telescopio */
-    int     x_pred[N];   /* Valore sull'asse x del centroide predetto del pianeta    */
-    int     y_pred[N];   /* Valore sull'asse y del centroide predetto del pianeta    */
+	int     telescope_state[N];  /* Stato di ogni telescopio */
+	int     x_pred[N];   /* Valore sull'asse x del centroide predetto del pianeta    */
+	int     y_pred[N];   /* Valore sull'asse y del centroide predetto del pianeta    */
 
-    int     completed; /* Conta i telescopi che hanno completato l'osservazione  */
-    int     noise_level[N]; /* Livello del rumore percepito da ogni telescopio  */
-    int     motor_level[N]; /* Motor speed level */
-    int     elaborated; /* A 1 se l'elaborazione finale è stata completata  */
+	int     completed; /* Conta i telescopi che hanno completato l'osservazione  */
+	int     noise_level[N]; /* Livello del rumore percepito da ogni telescopio  */
+	int     motor_level[N]; /* Motor speed level */
+	int     elaborated; /* A 1 se l'elaborazione finale è stata completata  */
 
-    BITMAP  *observation[N]; /* Bitmap delle osservazioni dei vari telescopi */
+	BITMAP  *observation[N]; /* Bitmap delle osservazioni dei vari telescopi */
 }tel;
 
 int     planet_x, planet_y; /* Coordinate del centroide del pianeta */
@@ -101,6 +102,12 @@ int finished; /* A 1 se il programma deve finire */
 
 extern void init();
 
+extern void create_tasks();
+
+extern void check_task_creation(int i, char s[]);
+
+extern void wait_for_esc();
+
 extern void planet();
 
 extern void telescope();
@@ -108,6 +115,5 @@ extern void telescope();
 extern void telescope_motor();
 
 extern void compute_result();
-
 
 #endif
