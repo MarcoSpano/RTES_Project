@@ -3,8 +3,6 @@
 int main(void){	
 	init();
 
-	start_ui();	
-
 	create_tasks();
 
 	wait_for_esc();

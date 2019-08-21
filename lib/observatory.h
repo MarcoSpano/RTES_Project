@@ -33,6 +33,7 @@
 #define HUNDRED 100
 #define BIT_IN_BYTE 8
 #define RED 15
+#define WHITE 15
 #define YELLOW 14
 #define GREEN 10
 
