@@ -1,16 +1,17 @@
 #ifndef OBSERVATORY_H
 
-#include "pmutex.h"
-#include "ptask.h"
-#include "tstat.h"
 #include <allegro.h>
-#include "../lib/gui.h"
 #include <math.h>
 #include <pthread.h>
 #include <sched.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+#include "pmutex.h"
+#include "ptask.h"
+#include "tstat.h"
+#include "../lib/gui.h"
 
 #define XWIN 1280
 #define YWIN 720

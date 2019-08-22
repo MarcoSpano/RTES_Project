@@ -9,16 +9,8 @@
 /home/gabri/Documenti/Embedded Systems/RTES_Project/lib/gui.h
 
 /home/gabri/Documenti/Embedded Systems/RTES_Project/lib/observatory.h
-pmutex.h
-/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/pmutex.h
-ptask.h
-/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/ptask.h
-tstat.h
-/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/tstat.h
 allegro.h
 -
-../lib/gui.h
-/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/gui.h
 math.h
 -
 pthread.h
@@ -31,6 +23,14 @@ stdlib.h
 -
 time.h
 -
+pmutex.h
+/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/pmutex.h
+ptask.h
+/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/ptask.h
+tstat.h
+/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/tstat.h
+../lib/gui.h
+/home/gabri/Documenti/Embedded Systems/RTES_Project/lib/gui.h
 
 /home/gabri/Documenti/Embedded Systems/RTES_Project/src/gui.c
 ../lib/observatory.h
