@@ -1,18 +1,28 @@
 #include "../lib/observatory.h"
 
+/**
+ * Handles graphic representation of the planet.
+ * @param	: BITMAP *buffer;	A bitmap that will be drawn on screen.
+ */
 void gui_planet(BITMAP *buffer){
-	int x, y;
+	int	x, y;	// Planet's image upper left corner coordinates
 
 	if(planet_x < XDIAG + OBS_SHAPE / 2){
-			x = planet_x - OBS_SHAPE / 2;
-			y = planet_y - OBS_SHAPE / 2;
-			stretch_sprite(buffer, planet_img, x, y, OBS_SHAPE, OBS_SHAPE);
+		x = planet_x - OBS_SHAPE / 2;
+		y = planet_y - OBS_SHAPE / 2;
+		stretch_sprite(buffer, planet_img, x, y, OBS_SHAPE, OBS_SHAPE);
 	}
 
 	clear_to_color(sky, BGC);
-	stretch_sprite(sky, planet_img, x, y, 300, 300);
+	stretch_sprite(sky, planet_img, x, y, OBS_SHAPE, OBS_SHAPE);
 }
 
+/**
+ * Handles graphic representation of a telescope's observation window and
+ * shows the line between its centroid and the position of the telescope.
+ * @param	: BITMAP *buffer;	A bitmap that will be drawn on screen.
+ * @param	: int i;			Index of the telecope.
+ */
 void telescope_on_sky(BITMAP *buffer, int i){
 	rect(buffer, tel.x_obs[i] - OBS_SHAPE / 2, tel.y_obs[i] - OBS_SHAPE / 2,
 		tel.x_obs[i] + OBS_SHAPE / 2, tel.y_obs[i] + OBS_SHAPE / 2, WHITE);
@@ -21,9 +31,12 @@ void telescope_on_sky(BITMAP *buffer, int i){
 	line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_pred[i], tel.y_pred[i], 30);
 }
 
+/**
+ * Handles graphic representation of the result image.
+ * @param	: BITMAP *buffer;	A bitmap that will be drawn on screen.
+ */
 void show_result(BITMAP *buffer){
-	int x1, y1;
-	int x2, y2;
+	int	x1, y1, x2, y2;	// Coordinates of the result image corners
 
 	x1 = 1 + N * (BASE - BORDER);
 	y1 = YWIN - LINE + BORDER;
@@ -35,10 +48,13 @@ void show_result(BITMAP *buffer){
 	rect(buffer, x1 + 1, y1, x2, y2, YELLOW);
 }
 
+/**
+ * Handles graphic representation of the telescopes.
+ * @param	: BITMAP *buffer;	A bitmap that will be drawn on screen.
+ */
 void gui_telescopes(BITMAP *buffer){
-	int i;
-	int x1, y1;
-	int x2, y2;
+	int	i;				// A counter
+	int	x1, y1, x2, y2;	// Coordinates of each telescope image coordinates
 
 	for(i = 0; i < N; i++){
 			x1 = 1 + i * (BASE - BORDER);
@@ -69,45 +85,50 @@ void gui_telescopes(BITMAP *buffer){
 		}
 }
 
+/**
+ * Handles graphic representation of noise and motor parameters.
+ * @param	: BITMAP *buffer;	A bitmap that will be drawn on screen.
+ */
 void gui_param_interface(BITMAP *buffer){
-	int 	i;
-	char	s[12];
-	char	nl[17];
-	char	ml[17];
+	int		i;					// A counter
+	char	s[T_NAME_LEN];		// Telescope name string
+	char	nl[MNL_STRING_LEN];	// Noise level string
+	char	ml[MNL_STRING_LEN];	// Motor level string
 
 	rectfill(buffer, XDIAG, YDIAG, XWIN, YDIAG+HDIAG, BGC);
-	rect(buffer, XDIAG, YDIAG, XWIN - 1, YDIAG + HDIAG, 15);
+	rect(buffer, XDIAG, YDIAG, XWIN - 1, YDIAG + HDIAG, WHITE);
 
-		for(i = 0; i < N; i++){
-			sprintf(s, "Telescope %d", i+1);
-			textout_ex(buffer, font, s, XDIAG + BORDER,
-				YDIAG + TBLOCK*(i) + BORDER, WHITE, 0);
+	for(i = 0; i < N; i++){
+		sprintf(s, "Telescope %d", i+1);
+		textout_ex(buffer, font, s, XDIAG + BORDER,
+			YDIAG + TBLOCK * (i) + BORDER, WHITE, 0);
 
-			sprintf(nl, "noise level: %d%%",
-				tel.noise_level[i] / NOISE_VAL_MULTIPLIER);
-			textout_ex(buffer, font, nl, XDIAG + BORDER * 2,
-				YDIAG + TBLOCK * (i) + BORDER * 2, WHITE, 0);
+		sprintf(nl, "noise level: %d%%",
+			tel.noise_level[i] / NOISE_VAL_MULTIPLIER);
+		textout_ex(buffer, font, nl, XDIAG + BORDER * 2,
+			YDIAG + TBLOCK * (i) + BORDER * 2, WHITE, 0);
 
-			sprintf(nl, "motor level: %d%%", tel.motor_level[i] * 10);
-			textout_ex(buffer, font, nl, XDIAG + BORDER * 2,
-				YDIAG + TBLOCK * (i) + BORDER * 3, WHITE, 0);
-		}
+		sprintf(nl, "motor level: %d%%", tel.motor_level[i] * BASE10);
+		textout_ex(buffer, font, nl, XDIAG + BORDER * 2,
+			YDIAG + TBLOCK * (i) + BORDER * (2 + 1), WHITE, 0);
+	}
 }
 
+/**
+ * Handles graphic representation of the instruction to exit the program.
+ * @param	: BITMAP *buffer;	A bitmap that will be drawn on screen.
+ */
 void gui_end(BITMAP *buffer){
 	if(tel.elaborated == 1)
-		textout_centre_ex(buffer, font, "ESC to exit the program",
-			XWIN / 2, BORDER, YELLOW, 0);
+		textout_centre_ex(buffer, font, "ESC to exit the program", XWIN / 2,
+			BORDER, YELLOW, 0);
 }
 
+/**
+ * Handles graphic representation of the application.
+ */
 void gui(){
-	int 	i;
-	int 	x, y;
-	int 	x1, y1;
-	int 	x2, y2;
-	BITMAP 	*buffer;
-	char	s[12];
-	char	nl[16];
+	BITMAP	*buffer;	// The only bitmap that will be directly drawn on screen
 
 	buffer = create_bitmap(XWIN,YWIN);
 	while(!finished){

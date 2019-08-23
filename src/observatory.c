@@ -44,8 +44,8 @@ void init_semaphores(struct telescopes* t){
  * @param	: struct telescopes* t;	The telescopes.
 */
 void init_coordinates(struct telescopes* t){
-	int i;		// A counter
-	int x, y;	// Observation window centroid coordinates
+	int	i;		// A counter
+	int	x, y;	// Observation window centroid coordinates
 
 	for(i = 0; i < N; i++){
 
@@ -56,10 +56,9 @@ void init_coordinates(struct telescopes* t){
 		t->x_obs[i] = x;
 
 		y = rand() % (OBS_SHAPE / 2) - OBS_SHAPE / 4;
-		y += 260;
+		y += RY / 2;
 	
 		t->y_obs[i] = y;    
-		t->x_angle[i] = 0;
 
 		t->x_pred[i] = t->x_obs[i];
 		t->y_pred[i] = t->y_obs[i];
@@ -76,7 +75,7 @@ void init_coordinates(struct telescopes* t){
  * @param	: struct telescopes* t;	The telescopes.
 */
 void init_velocity(struct telescopes* t){
-	planet_vx = 0.25 / PER;
+	planet_vx = A_QUARTER / PER;
 	planet_vy = 0;
 }
 
@@ -85,7 +84,7 @@ void init_velocity(struct telescopes* t){
  * @param	: struct telescopes* t;	The telescopes.
 */
 void init_bitmaps(struct telescopes* t){
-	int     i;	// A counter
+	int	i;	// A counter
 
 	planet_img = load_bitmap("../media/Jupiter.bmp", NULL);
 
@@ -96,7 +95,7 @@ void init_bitmaps(struct telescopes* t){
 
 	sky = create_bitmap(XWIN,YWIN);
 
-	for(i=0; i<N; i++)
+	for(i = 0; i < N; i++)
 		t->observation[i] = create_bitmap(OBS_SHAPE, OBS_SHAPE);
 
 	result = create_bitmap(OBS_SHAPE, OBS_SHAPE);
@@ -137,9 +136,9 @@ int check_value_motor(int n){
  * @param	: struct telescopes* t;	The telescopes.
 */
 void init_parameters(struct telescopes* t){
-	int     i;			// A counter
-	char    *endptr;	// Needed for strtol
-	int     n, m;		// Noise and Motor values
+	int		i;			// A counter
+	char	*endptr;	// Needed for strtol
+	int		n, m;		// Noise and Motor values
 
 	for(i = 0; i < N; i++){
 		t->telescope_state[i] = OBSERVATION;
@@ -147,25 +146,23 @@ void init_parameters(struct telescopes* t){
 		if(noise_modification[i][0] == 0)
 			n = DEFAULT_NOISE;
 		else{
-			n = strtol(noise_modification[i], &endptr, 10);
+			n = strtol(noise_modification[i], &endptr, BASE10);
 			n = check_value_noise(n);
 		}
 
 		if(motor_modification[i][0] == 0)
 			m = DEFAULT_MOTOR;
 		else{
-			m = strtol(motor_modification[i], &endptr, 10);
+			m = strtol(motor_modification[i], &endptr, BASE10);
 			m = check_value_motor(m);
 		}
 		t->noise_level[i] = n * NOISE_VAL_MULTIPLIER;
-		t->motor_level[i] = m / 10;
+		t->motor_level[i] = m / BASE10;
 		t->x_tel[i] = i * (BASE - BORDER) + (BASE - BORDER + 1) / 2;
 		t->y_tel[i] = YWIN - LINE;
 	}
 	t->completed = 0;
 	t->elaborated = 0;
-	kp = kd = 1;
-
 }
 
 /**
@@ -174,10 +171,10 @@ void init_parameters(struct telescopes* t){
 void dial_info(){
 	textout_centre_ex(screen, font,
 		"You can selecet the value (in percentage) of telescopes parameters",
-		XWIN / 2, BORDER, 14, 0);
+		XWIN / 2, BORDER, YELLOW, 0);
 	textout_centre_ex(screen, font,
 		"[If you leave blank, default parameters will be used]", 
-		XWIN / 2, 2*BORDER, 14, 0);
+		XWIN / 2, 2*BORDER, YELLOW, 0);
 }
 
 /**
@@ -189,27 +186,33 @@ void dial_info(){
  */
 DIALOG make_text(int i, int x, char s[]){
 	return (DIALOG){d_text_proc, x, LINE + (i + 1) * BORDER, TEXT_W, TEXT_H,
-			RED, BGC, 0, 0, 0, 0, s, NULL, NULL};
+			WHITE, BGC, 0, 0, 0, 0, s, NULL, NULL};
 }
 
+/**
+ * Delivers an edit dialog.
+ * @param	: int i; 	Index for the row (y axis) of the edit.
+ * @param	: int x; 	X axis value of the edit.
+ * @param	: char s[]; String to be written.
+ * @return	: DIALOG; 	The edit dialog.
+ */
 DIALOG make_edit(int i, int x, char s[]){
-	return (DIALOG){d_edit_proc, x,
-			LINE + (i + 1) * BORDER, TEXT_W, TEXT_H, 0, RED, 0, 0, 9, 0,
-			s, NULL, NULL};
+	return (DIALOG){d_edit_proc, x, LINE + (i + 1) * BORDER, TEXT_W, TEXT_H, 0,
+			WHITE, 0, 0, NINE, 0, s, NULL, NULL};
 }
 
 /**
  * Initializes the start dialog for parameters selection.
 */
 void init_dial(){
-	int     i;				// A counter
-	int     j;				// A counter
-	char    nl[6][14];		// Noise strings
-	char    ml[6][14];		// Motor strings
-	DIALOG  options[27];	// Start dialog
+	int		i;								// A counter
+	int		j;								// A counter
+	char	nl[N][PARAM_STRING_LEN];		// Noise strings
+	char	ml[N][PARAM_STRING_LEN];		// Motor strings
+	DIALOG	options[27];					// Start dialog
 
-	options[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, RED, BGC,
-		0, 0, 0, 0, NULL, NULL, NULL};
+	options[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, WHITE,
+					BGC, 0, 0, 0, 0, NULL, NULL, NULL};
 	
 	j = 1;
 	for(i = 0; i < N; i++){
@@ -286,8 +289,8 @@ void check_task_creation(int i, char s[]){
  * A cycle that checks when a key is pressed, until ESC button is selected.
  */
 void wait_for_esc(){
-	int c;
-	int k;
+	int	c;	// Return value of readkey()
+	int	k;	// Useful part of c
 
 	do {
 		k = 0;
@@ -303,8 +306,8 @@ void wait_for_esc(){
  * Creates tasks.
  */
 void create_tasks(){
-	int i;	// Return value of task creation
-	int k;	// A counter
+	int	i;	// Return value of task creation
+	int	k;	// A counter
 
 	/* Creates planet */
 	i = ptask_create_prio(planet, PER, PRIO, NOW);
@@ -343,14 +346,14 @@ void create_tasks(){
  * Updates simulated planet position each period.
 */
 void planet(){
-	float   i;	// Planet's left border x position
+	float	i;	// Planet's left border x position
 
 	i = 0;
 
-	while(planet_x < (XDIAG + OBS_SHAPE/2) && !finished){
+	while(planet_x < (XDIAG + OBS_SHAPE / 2) && !finished){
 		pthread_mutex_lock(&mutex);
 		i += planet_vx * PER;
-		planet_x = (int)(i + OBS_SHAPE/2);
+		planet_x = (int)(i + OBS_SHAPE / 2);
 		pthread_mutex_unlock(&mutex);
 		
 		ptask_wait_for_period();
@@ -363,12 +366,12 @@ void planet(){
  * @param	: int i;	Index of the telescope.
  */
 void centroid_prediction(int i){
-	int     x, y;   		// Counters
-	int     c;				// Color of a pixel
-	int     x_tmp, y_tmp;	// Used to compute predicted centroid coordinates
-	int     sum;			// Number of pixel read from sky
-	int     lb, ub; 		/* Used to compute upper left corner coordinates of
-								telescope's observation window */
+	int	x, y;   		// Counters
+	int	c;				// Color of a pixel
+	int	x_tmp, y_tmp;	// Used to compute predicted centroid coordinates
+	int	sum;			// Number of pixel read from sky
+	int	lb, ub; 		/* Used to compute upper left corner coordinates of
+							telescope's observation window */
 
 	x_tmp = 0;
 	y_tmp = 0;
@@ -407,9 +410,9 @@ void centroid_prediction(int i){
  * @param   : int i;	Index of the telescope.
  */
 void start_acquisition(int i){
-	int x, y;	// Random coordinates
-	int c;		// Random noise
-	int j;		// A counter
+	int	x, y;	// Random coordinates
+	int	c;		// Random noise
+	int	j;		// A counter
 	
 	pthread_mutex_lock(&tel.acquisition[i]);
 	pthread_mutex_lock(&mutex);
@@ -421,7 +424,7 @@ void start_acquisition(int i){
 		for(j = 0; j < tel.noise_level[i]; j++){
 			x = rand() % OBS_SHAPE;
 			y = rand() % OBS_SHAPE;
-			c = rand() % HUNDRED/2 - HUNDRED;
+			c = rand() % HUNDRED / 2 - HUNDRED;
 			
 			c += getpixel(tel.observation[i], x, y);
 			putpixel(tel.observation[i], x, y, c);
@@ -430,6 +433,10 @@ void start_acquisition(int i){
 	pthread_mutex_unlock(&mutex);
 }
 
+/**
+ * Cares about the syncronization of the telescope() function.
+ * @param	: int i;	Index of telescope.
+ */
 void end_acquisition(int i){
 	pthread_mutex_lock(&mutex);
 
@@ -444,7 +451,7 @@ void end_acquisition(int i){
  * It acquires images of the telescope's observation window.
  */
 void telescope(){
-	int i;  // Index of the task.
+	int	i;  // Index of the task.
 
 	i = ptask_get_index() - N - 1;
 
@@ -519,12 +526,12 @@ double compute_xangle(struct telescopes* t, int i){
  * @return	: double;				The angle.	
  */
 double compute_yangle(struct telescopes* t, int i){
-	double  m1;			// Slope of line between ground and observation centroid
+	double	m1;			// Slope of line between ground and observation centroid
 	double	m2;			// Slope of line between ground and predicted centroid
 	double	tn;			// Tangent of the angle
 
-	int     x_obs, x_pred;
-	int     delta_obs, delta_pred;
+	int		x_obs, x_pred;
+	int		delta_obs, delta_pred;
 
 	delta_obs = t->y_obs[i] - t->y_tel[i];
 	delta_pred = t->y_pred[i] - t->y_tel[i];
@@ -546,10 +553,10 @@ double compute_yangle(struct telescopes* t, int i){
  * @param	: int i;		Index of the telescope.
  */
 void xmotor(double angle, int i){
-	float   x;		// Angle in radiants
-	float   delta;	// Movement value in pixels
+	float	x;		// Angle in radiants
+	float	delta;	// Movement value in pixels
 
-	x = (angle * RX) / 180;
+	x = (angle * RX) / FLAT_ANGLE;
 
 	delta = tel.motor_level[i] * x;
 	if(delta > 0 && delta < 1)
@@ -566,10 +573,10 @@ void xmotor(double angle, int i){
  * @param	: int i;		Index of the telescope.
  */
 void ymotor(double angle, int i){
-	float y;		// Angle in radiants
-	float delta;	// Movement value in pixels
+	float	y;		// Angle in radiants
+	float	delta;	// Movement value in pixels
 
-	y = (RY * angle) / 180;
+	y = (RY * angle) / FLAT_ANGLE;
 
 	delta = tel.motor_level[i] * y;
 
@@ -586,9 +593,9 @@ void ymotor(double angle, int i){
  * Updates telescope's observetion window.
  */
 void telescope_motor(){
-	int     i;		// Task index
-	int     x, y;   // Current coordinates
-	double  angle;	// Angle to give to motors
+	int		i;		// Task index
+	int		x, y;   // Current coordinates
+	double	angle;	// Angle to give to motors
 
 	i = ptask_get_index() - 1;
 
@@ -642,10 +649,10 @@ void telescope_motor(){
  * @return	: int;			Most frequent color.
  */
 int find_majority_col(int col[]){
-	int i, j;	// Counters
-	int n;		// Counter
-	int c;		// Most frequent color
-	int max;	// Frequency of c 
+	int	i, j;	// Counters
+	int	n;		// Counter
+	int	c;		// Most frequent color
+	int	max;	// Frequency of c 
 
 	c = 0;
 	max = 0;
@@ -668,11 +675,11 @@ int find_majority_col(int col[]){
  * Computes the result image of the planet observed by all telescopes.
  */
 void compute_result(){
-	int     x, y;	// Counters
-	int     i;		// A counter
-	int     c;		// Most frequent color of a pixel in all observations
-	int     col[N];	// Colors of a pixel in all observations
-	PALETTE pal;	// Color palette
+	int		x, y;	// Counters
+	int		i;		// A counter
+	int		c;		// Most frequent color of a pixel in all observations
+	int		col[N];	// Colors of a pixel in all observations
+	PALETTE	pal;	// Color palette
 
 	pthread_mutex_lock(&tel.compute);
 	pthread_mutex_lock(&mutex);

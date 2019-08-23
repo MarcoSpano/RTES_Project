@@ -13,94 +13,97 @@
 #include "tstat.h"
 #include "../lib/gui.h"
 
-#define XWIN 1280
-#define YWIN 720
-#define OBS_SHAPE 300   /* Dimensione di un lato del quadrato si osservazione*/
-#define BGC 0    /* background color		*/
-#define G 9.8    /* acceleration of gravity	*/
-#define BASE 200  /* position of the floor	*/
-#define LINE 200
-#define BORDER 20    /* bordo tra le interfacce */
-#define PER 10   /* task period in ms		*/
-#define DREL 10  /* realtive deadline in ms	*/
-#define PRIO 80  /* task priority		*/
-#define MAX_NOISE 100 /* Massimo rumore in percentuale */
-#define DEFAULT_NOISE 50 /* Rumore standard in percentuale */
-#define NOISE_VAL_MULTIPLIER 100 /* Usato per moltiplicare la percentale di rumore */
-#define DEFAULT_MOTOR 10 /* Velocità standard di un motore */
+#define XWIN 1280		// Horizontal pixel number of the application window
+#define YWIN 720		// Vertical pixel number of the application window
+#define OBS_SHAPE 300	// Number of pixel of a side of the observation window
+#define BGC 0    		// Background color
+#define BASE 200		// Y axis position of the floor from the bottom
+#define LINE 200		// Y axis position of separation line frome the bottom
+#define BORDER 20    	// Border size in pixels
+#define PER 10   		// Task period in ms
+#define DREL 10  		// realtive deadline in ms
+#define PRIO 80  		// task priority
 
-#define N 6
+#define MAX_NOISE 100 				// Max noise in precentage
+#define DEFAULT_NOISE 50 			// Standard noise in percentage
+#define NOISE_VAL_MULTIPLIER 100 	// Used to multiply noise percentage
+#define DEFAULT_MOTOR 10 			// Standard motor value in percentage
+
+#define N 6	// Number of telescopes
 
 #define HUNDRED 100
-#define BIT_IN_BYTE 8
-#define RED 15
-#define WHITE 15
-#define YELLOW 14
-#define GREEN 10
+#define A_QUARTER 0.25
+#define BASE10 10
+#define FLAT_ANGLE 180
+#define NINE 9
+#define BIT_IN_BYTE 8	// Number of bits in a byte
+#define WHITE 15		// White value in allegro's palette
+#define YELLOW 14		// Yellow value in allegro's palette
+#define GREEN 10		// Green value in allegro's palette
 
-#define OBSERVATION 0
-#define TRACKING 1
-#define ACQUIRED 2
-#define COMPLETED 3
+#define OBSERVATION 0	// Observarion state value
+#define TRACKING 1		// Tracking state value
+#define ACQUIRED 2		// Acquired state value
+#define COMPLETED 3		// Completed state value
 
-#define XDIAG XWIN - BASE
-#define YDIAG 1
-#define WDIAG XWIN - XDIAG
-#define HDIAG YWIN - LINE - 1
-#define TBLOCK BORDER * 4
-#define RY 520
-#define RX 1080
+#define XDIAG XWIN - BASE;		// X axis position of information zone rect
+#define YDIAG 1					// Y axis position of information zone rect
+#define WDIAG XWIN - XDIAG		// Width of information zone
+#define HDIAG YWIN - LINE - 1	// Height of information zone
+#define TBLOCK BORDER * 4		// Shape of a block
+#define MNL_STRING_LEN 17		// Length of noise and motor level strings
+#define T_NAME_LEN 12			// Length of telescope name string
 
-#define DIALOG_W XWIN - 2 * LINE
-#define DIALOG_H YWIN - 2 * LINE
-#define TEXT_W 80
-#define TEXT_H 60
-#define NOISE_X LINE + BORDER
-#define MOTOR_X LINE + N * TEXT_W
-#define BUTTON_W 40
-#define BUTTON_H 25
+#define RY 520	// Y axis (pixel) length of observable space
+#define RX 1080	// X axis (pixel) length of observable space
 
-
+#define DIALOG_W XWIN - 2 * LINE	// Dialog width
+#define DIALOG_H YWIN - 2 * LINE	// Dialog height
+#define TEXT_W 80					// Dialog text width
+#define TEXT_H 60					// Dialog text height
+#define NOISE_X LINE + BORDER		// Initial x axis position of dialog noise information
+#define MOTOR_X LINE + N * TEXT_W	// Initial x axis position of dialog motor information
+#define BUTTON_W 40					// Dialog button width
+#define BUTTON_H 25					// Dialog button height
+#define PARAM_STRING_LEN 14			// Length of the string to be written
 
 pthread_mutex_t mutex;
 
 struct telescopes{
-	pthread_mutex_t acquisition[N];
-	pthread_mutex_t tracking[N];
-	pthread_mutex_t compute;
+	pthread_mutex_t acquisition[N];	// telescope() task semaphores
+	pthread_mutex_t tracking[N];	// telescope_motor() task semaphores
+	pthread_mutex_t compute;		// compute() task semaphore
 
-	int     x_obs[N];   /* Valore sull'asse x del centroide della finestra di osservazione    */
-	int     y_obs[N];   /* Valore sull'asse y del centroide della finestra di osservazione    */
-	float   x_tel[N];   /* Valore sull'asse x della posizione del telescopio    */
-	float   y_tel[N];   /* Valore sull'asse y della posizione del telescopio    */
-	float   x_angle[N]; /* Valore sull'asse x dell'angolo relativo al motore dei telescopi    */
+	int		x_obs[N];	// X axis value of observation windows centroids
+	int		y_obs[N];	// Y axis value of observation windows centroids
+	float	x_tel[N];	// X axis position of telescopes
+	float	y_tel[N];	// Y axis position of telescopes
+	int		x_pred[N];	// X axis position of predected planet's centroid
+	int		y_pred[N];	// Y axis position of predected planet's centroid
 
-	int     telescope_state[N];  /* Stato di ogni telescopio */
-	int     x_pred[N];   /* Valore sull'asse x del centroide predetto del pianeta    */
-	int     y_pred[N];   /* Valore sull'asse y del centroide predetto del pianeta    */
+	int		telescope_state[N];  // State of each telescope
 
-	int     completed; /* Conta i telescopi che hanno completato l'osservazione  */
-	int     noise_level[N]; /* Livello del rumore percepito da ogni telescopio  */
-	int     motor_level[N]; /* Motor speed level */
-	int     elaborated; /* A 1 se l'elaborazione finale è stata completata  */
+	int		noise_level[N];	// Noise level of each telescope
+	int		motor_level[N];	// Motor speed level of each telescope
 
-	BITMAP  *observation[N]; /* Bitmap delle osservazioni dei vari telescopi */
+	int		completed;	// Counts telescopes that have competed the observation
+	int		elaborated; // Equals 1 if final elaboration has been completed
+
+	BITMAP  *observation[N];	// Bitmaps of observetions
 }tel;
 
-int     planet_x, planet_y; /* Coordinate del centroide del pianeta */
-float   planet_vx;   /* Velocità del pianeta sull'asse x    */
-float   planet_vy;   /* Velocità del pianeta sull'asse y    */
+int		planet_x, planet_y;	// Planet's centroid coordinates
+float	planet_vx;			// X axis planet velocity
+float	planet_vy;			// Y axis planet velocity
 
-int kp, kd; /* Parametri di controllo del telescope motor   */
+BITMAP  *planet_img;	// Planet bitmap
+BITMAP  *sky;			// Sky bitmap. It's what a telescope can see (contains only the planet)
+BITMAP  *result;		// Result image bitmap
 
-BITMAP  *planet_img; /* Bitmap di un pianeta */
-BITMAP  *sky; /* Bitmap con solo il pianeta, niente intefaccia. E' ciò che un telescopio può vedere  */
-BITMAP  *result; /* Bitmap con il risultato dell'elaborazione    */
+char    noise_modification[6][3];	// Contains values for noise level modification
+char    motor_modification[6][3];	// Contains values for motor level modification
 
-char    noise_modification[6][3]; /* Contiene il valore per modificare il rumore */
-char    motor_modification[6][3]; /* Contiene il valore per modificare il la velocità del motore */
-
-int finished; /* A 1 se il programma deve finire */
+int finished;	// Equals 1 if the program must end (ESC is pressed)
 
 extern void init();
 
