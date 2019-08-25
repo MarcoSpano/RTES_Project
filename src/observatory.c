@@ -125,7 +125,7 @@ int check_value_noise(int n){
 int check_value_motor(int n){
 	if(n > HUNDRED)
 		n = HUNDRED;
-	else if(n <= 0)
+	else if(n <= DEFAULT_MOTOR)
 		n = DEFAULT_MOTOR;
 	
 	return n;
@@ -185,7 +185,7 @@ void dial_info(){
  * @return	: DIALOG; 	The text dialog.
  */
 DIALOG make_text(int i, int x, char s[]){
-	return (DIALOG){d_text_proc, x, LINE + (i + 1) * BORDER, TEXT_W, TEXT_H,
+	return (DIALOG){d_text_proc, x, LINE + (i * 2 + 1) * BORDER, TEXT_W, TEXT_H,
 			WHITE, BGC, 0, 0, 0, 0, s, NULL, NULL};
 }
 
@@ -197,8 +197,8 @@ DIALOG make_text(int i, int x, char s[]){
  * @return	: DIALOG; 	The edit dialog.
  */
 DIALOG make_edit(int i, int x, char s[]){
-	return (DIALOG){d_edit_proc, x, LINE + (i + 1) * BORDER, TEXT_W, TEXT_H, 0,
-			WHITE, 0, 0, 3, 0, s, NULL, NULL};
+	return (DIALOG){d_edit_proc, x, LINE + (i * 2 + 1) * BORDER, TEXT_W, TEXT_H, 
+			0, WHITE, 0, 0, DIGITS_IN_EDIT, 0, s, NULL, NULL};
 }
 
 /**

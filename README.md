@@ -26,7 +26,7 @@ make install
 
 Running the program:\
 mkdir build\
-sudo cmake ..\
-sudo make\
+cmake ..\
+make\
 sudo ./observatory
    

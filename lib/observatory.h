@@ -59,7 +59,7 @@
 #define DIALOG_W XWIN - 2 * LINE	// Dialog width
 #define DIALOG_H YWIN - 2 * LINE	// Dialog height
 #define TEXT_W 80					// Dialog text width
-#define TEXT_H 60					// Dialog text height
+#define TEXT_H 10					// Dialog text height
 #define NOISE_X LINE + BORDER		// Initial x axis position of dialog noise information
 #define MOTOR_X LINE + N * TEXT_W	// Initial x axis position of dialog motor information
 #define BUTTON_W 40					// Dialog button width
@@ -100,8 +100,8 @@ BITMAP  *planet_img;	// Planet bitmap
 BITMAP  *sky;			// Sky bitmap. It's what a telescope can see (contains only the planet)
 BITMAP  *result;		// Result image bitmap
 
-char    noise_modification[6][3];	// Contains values for noise level modification
-char    motor_modification[6][3];	// Contains values for motor level modification
+char    noise_modification[6][16];	// Contains values for noise level modification
+char    motor_modification[6][16];	// Contains values for motor level modification
 
 int finished;	// Equals 1 if the program must end (ESC is pressed)
 
