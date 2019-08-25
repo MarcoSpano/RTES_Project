@@ -35,7 +35,6 @@
 #define A_QUARTER 0.25
 #define BASE10 10
 #define FLAT_ANGLE 180
-#define NINE 9
 #define BIT_IN_BYTE 8	// Number of bits in a byte
 #define WHITE 15		// White value in allegro's palette
 #define YELLOW 14		// Yellow value in allegro's palette
@@ -66,6 +65,7 @@
 #define BUTTON_W 40					// Dialog button width
 #define BUTTON_H 25					// Dialog button height
 #define PARAM_STRING_LEN 14			// Length of the string to be written
+#define DIGITS_IN_EDIT 3			// Number of digits in an edit dialog
 
 pthread_mutex_t mutex;
 

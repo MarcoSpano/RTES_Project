@@ -1,3 +1,0 @@
-/home/gabri/Documenti/Embedded Systems/RTES_Project/build/CMakeFiles/rebuild_cache.dir
-/home/gabri/Documenti/Embedded Systems/RTES_Project/build/CMakeFiles/observatory.dir
-/home/gabri/Documenti/Embedded Systems/RTES_Project/build/CMakeFiles/edit_cache.dir
