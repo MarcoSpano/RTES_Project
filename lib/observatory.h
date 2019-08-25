@@ -46,7 +46,7 @@
 #define ACQUIRED 2		// Acquired state value
 #define COMPLETED 3		// Completed state value
 
-#define XDIAG XWIN - BASE;		// X axis position of information zone rect
+#define XDIAG XWIN - BASE		// X axis position of information zone rect
 #define YDIAG 1					// Y axis position of information zone rect
 #define WDIAG XWIN - XDIAG		// Width of information zone
 #define HDIAG YWIN - LINE - 1	// Height of information zone
