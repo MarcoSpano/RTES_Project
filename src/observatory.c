@@ -198,7 +198,7 @@ DIALOG make_text(int i, int x, char s[]){
  */
 DIALOG make_edit(int i, int x, char s[]){
 	return (DIALOG){d_edit_proc, x, LINE + (i + 1) * BORDER, TEXT_W, TEXT_H, 0,
-			WHITE, 0, 0, NINE, 0, s, NULL, NULL};
+			WHITE, 0, 0, 3, 0, s, NULL, NULL};
 }
 
 /**
