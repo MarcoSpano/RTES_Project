@@ -31,9 +31,9 @@ sudo apt-get install liballegro4.4 liballegro4-dev
 
 **Ptask is also required**:
 
-git clone https://github.com/glipari/ptask.git  \
+git clone https://github.com/glipari/ptask.git
 
-In ptask folder:\
+In ptask folder:
 >mkdir build\
 cd build\
 cmake ..\
@@ -42,7 +42,7 @@ make install
 
 ### Compile and Run
 
-In project folder:\
+In project folder:
 >mkdir build\
 cmake ..\
 make\
