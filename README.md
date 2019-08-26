@@ -4,9 +4,13 @@
 
 Telescopes. Simulate an array of N telescopes (positioned at the bottom of the screen) controlled to point at the centroid of the image of a moving planet (passing on top of the screen). Each telescope introduces some random noise, hence the system integrates the various images to produce an average output image. All images must be shown on the screen. The program must allow the user to change the noise level and motor control parameters of each telescope.
 
+### Parameters modification
+
 Parameters can be modified on the start page:
 
 ![ ](media/Start_UI.jpg?raw=true "Start page")
+
+### Simulation
 
 When the user selects "OK", the simulation begins:
 
@@ -14,8 +18,6 @@ When the user selects "OK", the simulation begins:
 
 Each telescope has an observation window (in other words, it's what a telescope can see), that is portraied at the bottom of the screen. When a telescope centers the planet, an image is taken and it stops.\
 When all telescopes took an image of the planet, an average output image is computed.
-
-![ ](media/Obs3.png?raw=true "Result")
 
 ---
 
