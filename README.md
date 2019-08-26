@@ -12,7 +12,7 @@ When the user selects "OK", the simulation begins:
 
 ![ ](media/Obs1.jpg?raw=true "Simulation")
 
-Each telescope has an observation window (in other words, it's what a telescope can see), that is portraied at the bottmo of the screen. When a telescope centers the planet, an image is taken and it stops.\
+Each telescope has an observation window (in other words, it's what a telescope can see), that is portraied at the bottom of the screen. When a telescope centers the planet, an image is taken and it stops.\
 When all telescopes took an image of the planet, an average output image is computed.
 
 ![ ](media/Obs3.png?raw=true "Result")
