@@ -62,8 +62,6 @@ void init_coordinates(struct telescopes* t){
 
 		t->x_pred[i] = t->x_obs[i];
 		t->y_pred[i] = t->y_obs[i];
-
-		fprintf(stderr, "%d) x: %d, y: %d\n", i, t->x_pred[i], t->y_pred[i]);
 	}
 
 	planet_x = HUNDRED;
