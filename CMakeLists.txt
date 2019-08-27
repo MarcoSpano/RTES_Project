@@ -8,7 +8,6 @@ set(CMAKE_GCC_FLAGS "-Wall -Wextra -Wconversion -pedantic -std=gnu11")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
-find_package(PkgConfig REQUIRED)
 find_package(Allegro REQUIRED)
 find_package(Threads REQUIRED)
 find_package(ptask REQUIRED)
