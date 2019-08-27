@@ -46,6 +46,7 @@ make install
 
 In project folder:
 >mkdir build\
+cd build\
 cmake ..\
 make\
 sudo ./observatory
