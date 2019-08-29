@@ -13,6 +13,23 @@
 #include "tstat.h"
 #include "../lib/gui.h"
 
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				This file contains all the definitions and variables
+//				that will be used. It contains observatory.c functions
+//				declarations.
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				INIT DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+
 #define XWIN 1280		// Horizontal pixel number of the application window
 #define YWIN 720		// Vertical pixel number of the application window
 #define OBS_SHAPE 300	// Number of pixel of a side of the observation window
@@ -23,27 +40,62 @@
 #define PER 10   		// Task period in ms
 #define DREL 10  		// realtive deadline in ms
 #define PRIO 80  		// task priority
+#define N 6				// Number of telescopes
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				PARAMETERS RELATED DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 #define MAX_NOISE 100 				// Max noise in precentage
 #define DEFAULT_NOISE 50 			// Standard noise in percentage
 #define NOISE_VAL_MULTIPLIER 100 	// Used to multiply noise percentage
 #define DEFAULT_MOTOR 10 			// Standard motor value in percentage
 
-#define N 6	// Number of telescopes
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				USEFUL NUMBERS DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 #define HUNDRED 100
 #define A_QUARTER 0.25
 #define BASE10 10
 #define FLAT_ANGLE 180
 #define BIT_IN_BYTE 8	// Number of bits in a byte
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				ALLEGRO COLORS DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
 #define WHITE 15		// White value in allegro's palette
 #define YELLOW 14		// Yellow value in allegro's palette
 #define GREEN 10		// Green value in allegro's palette
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				STATE DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 #define OBSERVATION 0	// Observarion state value
 #define TRACKING 1		// Tracking state value
 #define ACQUIRED 2		// Acquired state value
 #define COMPLETED 3		// Completed state value
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				INFORMATION INTERFACE DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 #define XDIAG XWIN - BASE		// X axis position of information zone rect
 #define YDIAG 1					// Y axis position of information zone rect
@@ -53,8 +105,22 @@
 #define MNL_STRING_LEN 17		// Length of noise and motor level strings
 #define T_NAME_LEN 12			// Length of telescope name string
 
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				OBSERVABLE SPACE DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
 #define RY 520	// Y axis (pixel) length of observable space
 #define RX 1080	// X axis (pixel) length of observable space
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				DIALOG RELATED DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 #define DIALOG_W XWIN - 2 * LINE	// Dialog width
 #define DIALOG_H YWIN - 2 * LINE	// Dialog height
@@ -67,7 +133,12 @@
 #define PARAM_STRING_LEN 14			// Length of the string to be written
 #define DIGITS_IN_EDIT 3			// Number of digits in an edit dialog
 
-pthread_mutex_t mutex;
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				STRUCTURES DEFINITIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 struct telescopes{
 	pthread_mutex_t acquisition[N];	// telescope() task semaphores
@@ -92,6 +163,15 @@ struct telescopes{
 	BITMAP  *observation[N];	// Bitmaps of observetions
 }tel;
 
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				VARIABLES
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+pthread_mutex_t mutex;
+
 int		planet_x, planet_y;	// Planet's centroid coordinates
 float	planet_vx;			// X axis planet velocity
 float	planet_vy;			// Y axis planet velocity
@@ -104,6 +184,13 @@ char    noise_modification[6][16];	// Contains values for noise level modificati
 char    motor_modification[6][16];	// Contains values for motor level modification
 
 int finished;	// Equals 1 if the program must end (ESC is pressed)
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				FUCTIONS DECLARATIONS
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 extern void init();
 

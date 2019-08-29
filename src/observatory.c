@@ -2,6 +2,19 @@
 
 //_____________________________________________________________________________
 //_____________________________________________________________________________
+//
+//				This file contains:
+//				- Init functions
+//				- Planet update function
+//				- Telescopes image acquisition and centroid prediction functions
+//				- Telescopes motor update functions
+//				- Result image computation functions
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
 
 //				INIT FUNCTIONS
 
@@ -9,7 +22,7 @@
 //_____________________________________________________________________________
 
 /**
- *  Intitializes all Allegro parameters. 
+ * Intitializes all Allegro parameters. 
 */
 void init_allegro(){
 	allegro_init();
@@ -49,13 +62,13 @@ void init_coordinates(struct telescopes* t){
 
 	for(i = 0; i < N; i++){
 
-		x = rand() % (XDIAG - OBS_SHAPE/2) ;
+		x = rand() % (XDIAG - OBS_SHAPE / 2);
 		if (x <= OBS_SHAPE / 2)
 			x += OBS_SHAPE / 2;
 
 		t->x_obs[i] = x;
 
-		y = rand() % (OBS_SHAPE / 2) - OBS_SHAPE / 4;
+		y = rand() % HUNDRED - HUNDRED / 2;
 		y += RY / 2;
 	
 		t->y_obs[i] = y;    
@@ -168,10 +181,10 @@ void init_parameters(struct telescopes* t){
  */
 void dial_info(){
 	textout_centre_ex(screen, font,
-		"You can selecet the value (in percentage) of telescopes parameters",
+		"You can select the value (in percentage) of telescopes parameters",
 		XWIN / 2, BORDER, YELLOW, 0);
 	textout_centre_ex(screen, font,
-		"[If you leave blank, default parameters will be used]", 
+		"[If you leave blank or if you set invalid values, default parameters will be used]", 
 		XWIN / 2, 2*BORDER, YELLOW, 0);
 }
 

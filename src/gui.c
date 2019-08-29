@@ -1,5 +1,14 @@
 #include "../lib/observatory.h"
 
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+//
+//				This file contains all functions related to graphical
+//				appearence of the simulation.
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+
 /**
  * Handles graphic representation of the planet.
  * @param	: BITMAP *buffer;	A bitmap that will be drawn on screen.
