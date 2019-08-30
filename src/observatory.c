@@ -40,13 +40,7 @@ void init_allegro(){
  * @param   : struct telescopes* t;	The telescopes.
 */
 void init_semaphores(struct telescopes* t){
-	int	i;	// A counter
 	pmux_create_pi(&mutex);
-
-	for(i = 0; i < N; i++){
-		pmux_create_pi(&t->acquisition[i]);
-		pmux_create_pi(&t->tracking[i]);
-	}
 
 	pthread_mutex_init(&t->compute, NULL);
 	pthread_mutex_lock(&t->compute);
@@ -425,7 +419,6 @@ void start_acquisition(int i){
 	int	c;		// Random noise
 	int	j;		// A counter
 	
-	pthread_mutex_lock(&tel.acquisition[i]);
 	pthread_mutex_lock(&mutex);
 	
 	centroid_prediction(i);
@@ -445,19 +438,6 @@ void start_acquisition(int i){
 }
 
 /**
- * Cares about the syncronization of the telescope() function.
- * @param	: int i;	Index of telescope.
- */
-void end_acquisition(int i){
-	pthread_mutex_lock(&mutex);
-
-	if(tel.telescope_state[i] != ACQUIRED)
-		pthread_mutex_unlock(&tel.acquisition[i]);
-	
-	pthread_mutex_unlock(&mutex);
-}
-
-/**
  * Telescope logic task. 
  * It acquires images of the telescope's observation window.
  */
@@ -468,8 +448,6 @@ void telescope(){
 
 	while(!finished && (tel.telescope_state[i] != ACQUIRED)){
 		start_acquisition(i);
-
-		end_acquisition(i);
 
 		ptask_wait_for_period();
 	}
@@ -608,7 +586,6 @@ void telescope_motor(){
 	i = ptask_get_index() - 1;
 
 	while(tel.telescope_state[i] != ACQUIRED && !finished){
-		pthread_mutex_lock(&tel.tracking[i]);
 		pthread_mutex_lock(&mutex);
 		
 		x = tel.x_obs[i];
@@ -631,9 +608,6 @@ void telescope_motor(){
 				}
 			}
 		}
-
-		if(tel.telescope_state[i] != ACQUIRED)
-			pthread_mutex_unlock(&tel.tracking[i]);
 
 		pthread_mutex_unlock(&mutex);
 		

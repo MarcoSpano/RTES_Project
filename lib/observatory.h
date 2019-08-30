@@ -143,8 +143,6 @@
 //_____________________________________________________________________________
 
 struct telescopes{
-	pthread_mutex_t acquisition[N];	// telescope() task semaphores
-	pthread_mutex_t tracking[N];	// telescope_motor() task semaphores
 	pthread_mutex_t compute;		// compute() task semaphore
 
 	int		x_obs[N];	// X axis value of observation windows centroids
