@@ -184,8 +184,8 @@ void dial_info(){
 		"You can select the value (in percentage) of telescopes parameters",
 		XWIN / 2, BORDER, YELLOW, 0);
 	textout_centre_ex(screen, font,
-		"[If you leave blank or if you set invalid values, default parameters will be used]", 
-		XWIN / 2, 2*BORDER, YELLOW, 0);
+		"[If you leave blank, default parameters will be used]",
+		XWIN / 2, 2 * BORDER, YELLOW, 0);
 }
 
 /**
@@ -216,11 +216,11 @@ DIALOG make_edit(int i, int x, char s[]){
  * Initializes the start dialog for parameters selection.
 */
 void init_dial(){
-	int		i;								// A counter
-	int		j;								// A counter
-	char	nl[N][PARAM_STRING_LEN];		// Noise strings
-	char	ml[N][PARAM_STRING_LEN];		// Motor strings
-	DIALOG	options[27];					// Start dialog
+	int		i;							// A counter
+	int		j;							// A counter
+	char	nl[N][PARAM_STRING_LEN];	// Noise strings
+	char	ml[N][PARAM_STRING_LEN];	// Motor strings
+	DIALOG	options[27];				// Start dialog
 
 	options[0] = (DIALOG){d_box_proc, LINE, LINE, DIALOG_W, DIALOG_H, WHITE,
 					BGC, 0, 0, 0, 0, NULL, NULL, NULL};
@@ -365,11 +365,11 @@ void planet(){
 		pthread_mutex_lock(&mutex);
 		i += planet_vx * PER;
 		planet_x = (int)(i + OBS_SHAPE / 2);
+
 		pthread_mutex_unlock(&mutex);
 		
 		ptask_wait_for_period();
 	}
-	fprintf(stderr, "planet has finished\n");
 }
 
 /**
@@ -411,8 +411,8 @@ void centroid_prediction(int i){
 		x_tmp = x_tmp / sum;
 		y_tmp = y_tmp / sum;
 
-		tel.x_pred[i] = tel.x_obs[i] - OBS_SHAPE/2 + x_tmp;
-		tel.y_pred[i] = tel.y_obs[i] - OBS_SHAPE/2 + y_tmp;
+		tel.x_pred[i] = tel.x_obs[i] - OBS_SHAPE / 2 + x_tmp;
+		tel.y_pred[i] = tel.y_obs[i] - OBS_SHAPE / 2 + y_tmp;
 	}
 }
 
@@ -475,14 +475,11 @@ void telescope(){
 	}
 
 	if(tel.completed == N){
-		fprintf(stderr, "Hanno tutti completato!\n");
 		pthread_mutex_unlock(&tel.compute);
 		tel.completed = 0;
 	}
 
 	ptask_wait_for_period();
-
-	fprintf(stderr, "telescope %d has finished\n", i);
 }
 
 //_____________________________________________________________________________
@@ -642,8 +639,6 @@ void telescope_motor(){
 		
 		ptask_wait_for_period();
 	}
-
-	fprintf(stderr, "motor %d has finished\n", i);
 }
 
 //_____________________________________________________________________________
@@ -695,8 +690,6 @@ void compute_result(){
 	pthread_mutex_lock(&tel.compute);
 	pthread_mutex_lock(&mutex);
 
-	fprintf(stderr, "Elaborazione...\n");
-
 	for(x = 0; x < OBS_SHAPE; x++)
 		for(y = 0; y < OBS_SHAPE; y++){
 			c = 0;
@@ -713,6 +706,4 @@ void compute_result(){
 	tel.elaborated = 1;
 
 	pthread_mutex_unlock(&mutex);
-
-	fprintf(stderr, "compute has finished\n");
 }

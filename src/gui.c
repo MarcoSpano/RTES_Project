@@ -16,7 +16,7 @@
 void gui_planet(BITMAP *buffer){
 	int	x, y;	// Planet's image upper left corner coordinates
 
-	if(planet_x < XDIAG + OBS_SHAPE / 2){
+	if(planet_x < PLANET_LIMIT){
 		x = planet_x - OBS_SHAPE / 2;
 		y = planet_y - OBS_SHAPE / 2;
 		stretch_sprite(buffer, planet_img, x, y, OBS_SHAPE, OBS_SHAPE);
@@ -37,7 +37,8 @@ void telescope_on_sky(BITMAP *buffer, int i){
 		tel.x_obs[i] + OBS_SHAPE / 2, tel.y_obs[i] + OBS_SHAPE / 2, WHITE);
 	line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_obs[i], tel.y_obs[i],
 		YELLOW);
-	line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_pred[i], tel.y_pred[i], 30);
+	line(buffer, tel.x_tel[i], tel.y_tel[i], tel.x_pred[i], tel.y_pred[i],
+		WHITE * 2);
 }
 
 /**
@@ -78,7 +79,7 @@ void gui_telescopes(BITMAP *buffer){
 				y2 - y1);
 
 			rect(buffer, tel.x_pred[i], tel.y_pred[i], tel.x_pred[i] + 2,
-				tel.y_pred[i] + 2, 40);
+				tel.y_pred[i] + 2, T_CENTR);
 
 			rect(buffer, x1, y1, x2, y2, HUNDRED);
 
@@ -104,11 +105,11 @@ void gui_param_interface(BITMAP *buffer){
 	char	nl[MNL_STRING_LEN];	// Noise level string
 	char	ml[MNL_STRING_LEN];	// Motor level string
 
-	rectfill(buffer, XDIAG, YDIAG, XWIN, YDIAG+HDIAG, BGC);
+	rectfill(buffer, XDIAG, YDIAG, XWIN, YDIAG + HDIAG, BGC);
 	rect(buffer, XDIAG, YDIAG, XWIN - 1, YDIAG + HDIAG, WHITE);
 
 	for(i = 0; i < N; i++){
-		sprintf(s, "Telescope %d", i+1);
+		sprintf(s, "Telescope %d", i + 1);
 		textout_ex(buffer, font, s, XDIAG + BORDER,
 			YDIAG + TBLOCK * (i) + BORDER, WHITE, 0);
 

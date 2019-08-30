@@ -33,6 +33,7 @@
 #define XWIN 1280		// Horizontal pixel number of the application window
 #define YWIN 720		// Vertical pixel number of the application window
 #define OBS_SHAPE 300	// Number of pixel of a side of the observation window
+#define T_CENTR 40		// Number of pixel of a side of the predicted centroid
 #define BGC 0    		// Background color
 #define BASE 200		// Y axis position of the floor from the bottom
 #define LINE 200		// Y axis position of separation line frome the bottom
@@ -112,8 +113,9 @@
 //_____________________________________________________________________________
 //_____________________________________________________________________________
 
-#define RY 520	// Y axis (pixel) length of observable space
-#define RX 1080	// X axis (pixel) length of observable space
+#define RY 520				// Y axis (pixel) length of observable space
+#define RX 1080				// X axis (pixel) length of observable space
+#define PLANET_LIMIT 1180	// X axis value, after this the planet is no more drawn
 
 //_____________________________________________________________________________
 //_____________________________________________________________________________
