@@ -480,8 +480,8 @@ double compute_xangle(struct telescopes* t, int i){
 	double	m2;			// Slope of line between ground and predicted centroid
 	double	tn;			// Tangent of the angle
 
-	int     y_obs, y_pred;
-	int     delta_obs, delta_pred;
+	int     y_obs, y_pred;			// Virtual coordinates for angle computation
+	int     delta_obs, delta_pred;	// Distance from telescope position
 
 	delta_obs = t->x_obs[i] - t->x_tel[i];
 	delta_pred = t->x_pred[i] - t->x_tel[i];
@@ -516,8 +516,8 @@ double compute_yangle(struct telescopes* t, int i){
 	double	m2;			// Slope of line between ground and predicted centroid
 	double	tn;			// Tangent of the angle
 
-	int		x_obs, x_pred;
-	int		delta_obs, delta_pred;
+	int		x_obs, x_pred;			// Virtual coordinates for angle computation
+	int		delta_obs, delta_pred;	// Distance from telescope position
 
 	delta_obs = t->y_obs[i] - t->y_tel[i];
 	delta_pred = t->y_pred[i] - t->y_tel[i];
