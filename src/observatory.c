@@ -326,7 +326,7 @@ void create_tasks(){
 	
 	/* Crea telescope */
 	for(k = 0; k < N; k++){
-		i = ptask_create_prio(telescope, PER, PRIO, NOW);
+		i = ptask_create_prio(telescope, ACQ_PER, PRIO, NOW);
 		check_task_creation(i, "Telescope acquisition");     
 	}	
 
@@ -414,7 +414,7 @@ void centroid_prediction(int i){
  * Defines what telescope "i" see.
  * @param   : int i;	Index of the telescope.
  */
-void start_acquisition(int i){
+void acquisition(int i){
 	int	x, y;	// Random coordinates
 	int	c;		// Random noise
 	int	j;		// A counter
@@ -447,7 +447,7 @@ void telescope(){
 	i = ptask_get_index() - N - 1;
 
 	while(!finished && (tel.telescope_state[i] != ACQUIRED)){
-		start_acquisition(i);
+		acquisition(i);
 
 		ptask_wait_for_period();
 	}

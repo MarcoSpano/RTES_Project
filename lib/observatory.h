@@ -39,7 +39,7 @@
 #define LINE 200		// Y axis position of separation line frome the bottom
 #define BORDER 20    	// Border size in pixels
 #define PER 10   		// Task period in ms
-#define DREL 10  		// realtive deadline in ms
+#define ACQ_PER 20  	// Aquisition task period in ms
 #define PRIO 80  		// task priority
 #define N 6				// Number of telescopes
 
